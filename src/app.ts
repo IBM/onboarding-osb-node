@@ -1,4 +1,4 @@
-import { AppDataSource } from './db'
+import { AppDataSource } from './db/dataSourceLocal'
 import * as express from 'express'
 import * as dotenv from 'dotenv'
 import { Request, Response } from 'express'

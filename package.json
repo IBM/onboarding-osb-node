@@ -18,6 +18,7 @@
     "test": "jest",
     "start:dev": "concurrently \"npm run watch\" \"npm run dev\"",
     "typeorm": "ts-node ./node_modules/typeorm/cli.js",
+    "migration:generate": "npx typeorm-ts-node-esm migration:generate -d src/db/dataSourceLocal.ts",
     "migration": "npm run typeorm migration:run -- -d ./src/db"
   },
   "engines": {
