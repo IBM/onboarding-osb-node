@@ -18,7 +18,7 @@
     "test": "jest",
     "start:dev": "concurrently \"npm run watch\" \"npm run dev\"",
     "typeorm": "ts-node ./node_modules/typeorm/cli.js",
-    "migration": "npm run typeorm migration:run -- -d ./src/data-source.ts"
+    "migration": "npm run typeorm migration:run -- -d ./src/db"
   },
   "engines": {
     "node": ">=18.0.0"

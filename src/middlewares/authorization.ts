@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from "express";
-import { AppDataSource } from "../data-source";
+import { AppDataSource } from "../db";
 import { User } from "../db/entities/User.entity";
 
 export const authorization = (roles: string[]) => {

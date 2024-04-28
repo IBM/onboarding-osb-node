@@ -1,9 +1,9 @@
 import { IsNotEmpty } from 'class-validator'
-import { BaseDTO } from './base.dto'
-import { DashboardClient } from './dashboard-client.dto'
-import { Plan } from './plan.dto'
+import { BaseModel } from './base.model'
+import { DashboardClient } from './dashboard-client.model'
+import { Plan } from './plan.model'
 
-export class ServiceDefinition extends BaseDTO {
+export class ServiceDefinition extends BaseModel {
   @IsNotEmpty()
   name: string
 

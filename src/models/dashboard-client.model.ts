@@ -1,6 +1,6 @@
-import { BaseDTO } from './base.dto'
+import { BaseModel } from './base.model'
 
-export class DashboardClient extends BaseDTO {
+export class DashboardClient extends BaseModel {
   readonly secret: string
   readonly redirectUri: string
 

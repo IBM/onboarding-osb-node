@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import * as cache from "memory-cache";
-import { AppDataSource } from "../data-source";
+import { AppDataSource } from "../db";
 import { Movie } from "../db/entities/Movies.entity";
 
 export class MovieController {
