@@ -1,38 +1,31 @@
-# Add any directories, files, or patterns you don't want to be tracked by version control
-.idea
+# Dependency directories
+node_modules/
 
-# ignore vs code project config files
-.vs
+# Directory for TypeScript output
+dist/
 
-# ignore logs
-logs
+# Editor directories and files
+.vscode/
+.idea/
+*.sublime-workspace
+*.sublime-project
+*.komodoproject
+*.komodotools
+*.[oa]
+
+# Environment variables file
+.env
+
+# Log files
+logs/
 *.log
 
-# ignore 3rd party lib
-node_modules
+# Temporary files
+*.tmp
 
-# ignore key
-*.pem
-
-# Ignore built files
-build
-
-# ignore test converage
-coverage
-
-# Environment varibles
-*.env
-*.env.test
-*.env copy
-
-#keys
-keys/*
-!keys/*.md
-!keys/*.example
-
-#temp
-temp
+# OS generated files
 .DS_Store
+Thumbs.db
 
-*.save
-*.save.*
+# Build files
+build/

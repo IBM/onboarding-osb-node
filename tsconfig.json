@@ -1,25 +1,22 @@
 {
   "compilerOptions": {
-    "module": "CommonJS",
-    "esModuleInterop": true,
-    "target": "ES2022",
-    "allowJs": false,
-    "strictNullChecks": true,
-    "noImplicitAny": true,
-    "strict": true,
-    "strictFunctionTypes": false,
-    "noImplicitThis": false,
+    "target": "es2019",
+    "module": "commonjs",
+    "lib": ["es2019"],
     "moduleResolution": "node",
-    "resolveJsonModule": true,
-    "sourceMap": true,
-    "outDir": "build",
-    "baseUrl": ".",
+    "outDir": "./build",
+    "rootDir": "./src",
+    "baseUrl": "./src",
     "paths": {
-      "*": ["node_modules/*", "src/types/*"]
+      "*": ["../node_modules/*", "types/*"]
     },
-    "experimentalDecorators": true, // Enable experimental support for decorators
-    "emitDecoratorMetadata": true // Emit design-type metadata for decorated declarations in source
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    "sourceMap": true,
+    "forceConsistentCasingInFileNames": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true
   },
-  "include": ["src/**/*"],
-  "exclude": ["node_modules", ".templates"]
+  "include": ["**/*"],
+  "exclude": ["../node_modules", "**/*.spec.ts"]
 }
