@@ -1,0 +1,122 @@
+{
+	"metadata": {
+	  "type": "public",
+	  "created": "2021-08-08T20:47:51.35Z",
+      "updated": "2021-09-10T20:47:51.35Z",
+	  "longDescription": "OSB Sample for partners onboarding products to IBM Cloud",
+	  "serviceKeysSupported": false,
+	  "displayName": "OSB Sample",
+	  "providerDisplayName": "Manjula Athani",
+	  "featuredImageUrl": "https://ibm.com",
+	  "documentationUrl": "https://ibm.com",
+	  "termsUrl": "https://ibm.com",
+	  "parameters": [],
+	  "imageUrl": "https://ibm.com",
+	  "smallImageUrl": "https://ibm.com",
+	  "mediumImageUrl": "https://ibm.com",
+	  "supportUrl": "https://ibm.com",
+	  "instructionsUrl": "https://ibm.com",
+	  "i18n": {
+		"en": {
+		  "metadata": {
+			"longDescription": "OSB Sample for partners onboarding products to IBM Cloud",
+			"displayName": "OSB Sample"
+		  },
+		  "description": "OSB Sample",
+		  "plans": [
+			{
+			  "id": "eeaf64b6-cee5-4f7e-ac94-57d34690301e",
+			  "description": "Lite for OSB Sample",
+			  "metadata": {
+				"displayName": "Lite plan",
+				"bullets": [
+				  "Lite plan"
+				]
+			  }
+			}
+		  ]
+		}
+	  }
+	},
+	"bindable": false,
+	"rc_compatible": true,
+	"iam_compatible": false,
+	"plan_updateable": false,
+	"unique_api_key": false,
+	"tags": [
+	  "integration",
+	  "rc_compatible",
+	  "ibm_beta",
+	  "ibm_created"
+	],
+	"name": "osb-sample",
+	"id": "b0624000-f8da-11eb-865d-4f6200f39298",
+	"description": "OSB Sample",
+	"provisionable": true,
+	"plans": [
+	  {
+		"name": "Lite",
+		"free": true,
+		"description": "Lite for OSB Sample",
+		"id": "eeaf64b6-cee5-4f7e-ac94-57d34690301e",
+		"metadata": {
+		  "regional": false,
+		  "created": "2021-08-08T20:47:51.35Z",
+		  "allowInternalUsers": true,
+		  "displayName": "Lite plan",
+		  "bullets": [
+			"Lite plan"
+		  ],
+		  "costs": [
+			{
+			  "is_ceil": false,
+			  "is_rated": false,
+			  "rating_model": "linear_tier",
+			  "unit": "NUM_OF_USERS",
+			  "unitId": "AGGR_NUMBER_USERS",
+			  "resourceDisplayName": "Aggregated number of users",
+			  "unitDisplayName": "Number of users",
+			  "model": "standard_max",
+			  "rmcGenTime": 1628490859414
+			}
+		  ],
+		  "rc_compatible": true
+		},
+		"pricingCatalogRev": "1-eaed4a48c245575f5bb84c655ea73631",
+		"pricingCatalogId": "2e0a997f236b27d80ee5b5498e00eae6",
+		"effective_from": "2021-08-09T00:00:00.000Z",
+		"effective_until": "9999-12-31T00:00:00.000Z"
+	  },
+	  {
+		"name": "paid-plan",
+		"free": false,
+		"description": "Paid for OSB Sample offering",
+		"id": "d786d82e-2ff1-4b65-b5e0-1a30f856bfca",
+		"metadata": {
+		  "regional": false,
+		  "created": "2021-08-08T20:47:51.35Z",
+		  "allowInternalUsers": true,
+		  "displayName": "Paid plan1",
+		  "bullets": [
+			"Paid plan1"
+		  ],
+		  "costs": [
+			{
+			  "is_ceil": false,
+			  "is_rated": false,
+			  "rating_model": "linear_tier",
+			  "unit": "OSB_ACTIVE_USERS",
+			  "unitDisplayName": "OSB Active Users",
+			  "unitId": "AGGR_ACTIVE_USERS",
+			  "resourceDisplayName": "Aggregated users",
+			  "model": "standard_add",
+			  "rmcGenTime": 1630944335925
+			}
+		  ],
+		  "subscriptionOnly": false,
+		  "subscription": false,
+		  "paidOnly": false
+		}
+	  }
+	]
+  }

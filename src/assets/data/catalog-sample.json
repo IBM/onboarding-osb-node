@@ -1,0 +1,74 @@
+{
+  "metadata": {
+    "type": "public",
+    "longDescription": "IBM Cloud Hello Service\n",
+    "serviceKeysSupported": false,
+    "displayName": "IBM Cloud Hello Service",
+    "featuredImageUrl": "https://helloservice.cloud.ibm.com/helloservice.svg",
+    "documentationUrl": "https://cloud.ibm.com/docs",
+    "termsUrl": "http://www-03.ibm.com/software/sla/sladb.nsf/sla/sd?OpenDocument",
+    "providerDisplayName": "IBM",
+    "parameters": [],
+    "imageUrl": "https://helloservice.cloud.ibm.com/helloservice.svg",
+    "smallImageUrl": "https://helloservice.cloud.ibm.com/helloservice.svg",
+    "mediumImageUrl": "https://helloservice.cloud.ibm.com/helloservice.svg",
+    "bullets": [
+      {
+        "title": "OSB Broker Demo",
+        "description": "OSB Broker Demo"
+      }
+    ],
+    "supportUrl": "https://support.cloud.ibm.com"
+  },
+  "bindable": true,
+  "rc_compatible": true,
+  "iam_compatible": true,
+  "plan_updateable": false,
+  "unique_api_key": false,
+  "tags": [
+    "rc_compatible",
+    "lite",
+    "ibm_release",
+    "ibm_created"
+  ],
+  "name": "helloservice",
+  "id": "service123",
+  "description": "OSB Broker Demo",
+  "plans": [
+    {
+      "name": "lite",
+      "free": true,
+      "description": "Trial plan to run standard VM images  of software \n",
+      "id": "lite123",
+      "metadata": {
+        "lite": true,
+        "bullets": [
+          "15 days free trial plan to experiment this virtual computing lab offering",
+          "Standard Image Size\t:  2 vCPU, 8GB RAM, 200GB Disk",
+          "Total cores: 2 vCPU",
+          "Total Memory: 8 GB",
+          "Total  Disk: 200 GB"
+        ],
+        "allowInternalUsers": true,
+        "displayName": "Applications Lab Lite Plan",
+        "costs": [
+          {
+            "is_ceil": false,
+            "is_rated": false,
+            "rating_model": "linear_tier",
+            "unit": "Number of User",
+            "unitId": "NUMBER_OF_USERS_MONTH",
+            "unitDisplayName": "Number of User",
+            "resourceDisplayName": "Trial number of Users Per Month",
+            "model": "standard_max",
+            "rmcGenTime": 1602002913613,
+            "meteringUnit": "NUMBER_OF_USERS"
+          }
+        ]
+      },
+      "pricingCatalogRev": "123",
+      "pricingCatalogId": "234"
+    }
+  ],
+  "provisionable": true
+}
