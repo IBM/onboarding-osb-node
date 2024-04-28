@@ -1,7 +1,7 @@
 import { IsNotEmpty } from 'class-validator'
-import { BaseDTO } from './base.dto'
+import { BaseModel } from './base.model'
 
-export class Plan extends BaseDTO {
+export class Plan extends BaseModel {
   @IsNotEmpty()
   name: string
 

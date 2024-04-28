@@ -1,11 +1,11 @@
-import { AppDataSource } from './data-source'
+import { AppDataSource } from './db'
 import * as express from 'express'
 import * as dotenv from 'dotenv'
 import { Request, Response } from 'express'
 import { userRouter } from './routes/user.routes'
 import { movieRouter } from './routes/movie.routes'
 import 'reflect-metadata'
-import { errorHandler } from './middleware/errorHandler'
+import { errorHandler } from './middlewares/errorHandler'
 dotenv.config()
 
 const app = express()

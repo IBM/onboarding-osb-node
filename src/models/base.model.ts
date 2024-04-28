@@ -1,6 +1,6 @@
 import { IsNotEmpty, IsUUID } from 'class-validator'
 
-export abstract class BaseDTO {
+export abstract class BaseModel {
   @IsUUID()
   @IsNotEmpty()
   id: string
