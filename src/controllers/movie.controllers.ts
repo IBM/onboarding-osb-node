@@ -1,6 +1,6 @@
 import { Request, Response } from 'express'
 import * as cache from 'memory-cache'
-import DataSourceLocal from '../db/dataSourceLocal'
+import DataSource from '../db/data-source'
 import { Movie } from '../db/entities/Movies.entity'
 
 export class MovieController {
@@ -13,7 +13,7 @@ export class MovieController {
       })
     } else {
       console.log('serving from db')
-      const movieRepository = DataSourceLocal.getRepository(Movie)
+      const movieRepository = DataSource.getRepository(Movie)
       const movies = await movieRepository.find()
       cache.put('data', movies, 10000)
       return res.status(200).json({
@@ -31,7 +31,7 @@ export class MovieController {
     movie.rating = rating
     movie.image = image
     movie.cast = cast
-    const movieRepository = DataSourceLocal.getRepository(Movie)
+    const movieRepository = DataSource.getRepository(Movie)
     await movieRepository.save(movie)
     return res
       .status(200)
@@ -41,7 +41,7 @@ export class MovieController {
   static async updateMovie(req: Request, res: Response) {
     const { id } = req.params
     const { title, description, director, year, rating, image, cast } = req.body
-    const movieRepository = DataSourceLocal.getRepository(Movie)
+    const movieRepository = DataSource.getRepository(Movie)
     const movie = await movieRepository.findOne({
       where: { id },
     })
@@ -60,7 +60,7 @@ export class MovieController {
 
   static async deleteMovie(req: Request, res: Response) {
     const { id } = req.params
-    const movieRepository = DataSourceLocal.getRepository(Movie)
+    const movieRepository = DataSource.getRepository(Movie)
     const movie = await movieRepository.findOne({
       where: { id },
     })

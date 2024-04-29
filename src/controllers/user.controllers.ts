@@ -1,5 +1,5 @@
 import { Request, Response } from 'express'
-import DataSource from '../db/dataSource'
+import DataSource from '../db/data-source'
 import { User } from '../db/entities/User.entity'
 import { encrypt } from '../utils/encrypt'
 import * as cache from 'memory-cache'
