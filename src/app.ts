@@ -4,7 +4,7 @@ import dotenv from 'dotenv'
 import { userRouter } from './routes/user.routes'
 import { movieRouter } from './routes/movie.routes'
 import { errorHandler } from './middlewares/errorHandler'
-import DataSource from './db/dataSource'
+import DataSource from './db/data-source'
 
 dotenv.config()
 

@@ -17,9 +17,9 @@ let connectionOptions: DataSourceOptions = {
   database: DB_NAME,
   synchronize: NODE_ENV === 'development' ? false : false,
   logging: NODE_ENV === 'development' ? false : false,
-  entities: ['src/**/*.entity{.ts,.js}'],
-  migrations: ['src/db/migrations/*{.ts,.js}'],
-  subscribers: [],
+  entities: ['src/db/entities/**/*.entity.ts'],
+  migrations: ['src/db/migrations/**/*.ts'],
+  subscribers: ['src/db/subscribers/**/*.ts'],
 }
 
 export default new DataSource({

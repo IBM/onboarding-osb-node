@@ -2,7 +2,7 @@ import e from 'cors'
 import { Entity, Column } from 'typeorm'
 import { BaseEntity } from './base.entity'
 
-@Entity({ name: 'service_instance', synchronize: false })
+@Entity({ name: 'service_instance' })
 export class ServiceInstance extends BaseEntity {
   @Column({ name: 'instance_id' })
   instanceId: string

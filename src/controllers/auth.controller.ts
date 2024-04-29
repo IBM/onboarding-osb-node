@@ -1,5 +1,5 @@
 import { Request, Response } from 'express'
-import DataSourceLocal from '../db/dataSourceLocal'
+import DataSource from '../db/data-source'
 import { User } from '../db/entities/User.entity'
 import { encrypt } from '../utils/encrypt'
 
@@ -11,7 +11,7 @@ export class AuthController {
         return res.status(500).json({ message: ' email and password required' })
       }
 
-      const userRepository = DataSourceLocal.getRepository(User)
+      const userRepository = DataSource.getRepository(User)
       const user = await userRepository.findOne({ where: { email } })
 
       const isPasswordValid = encrypt.comparepassword(user.password, password)
@@ -31,7 +31,7 @@ export class AuthController {
     if (!req[' currentUser']) {
       return res.status(401).json({ message: 'Unauthorized' })
     }
-    const userRepository = DataSourceLocal.getRepository(User)
+    const userRepository = DataSource.getRepository(User)
     const user = await userRepository.findOne({
       where: { id: req[' currentUser'].id },
     })

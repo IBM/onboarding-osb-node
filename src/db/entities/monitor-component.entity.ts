@@ -1,7 +1,7 @@
 import { Column, Entity } from 'typeorm'
 import { BaseEntity } from './base.entity'
 
-@Entity({ name: 'monitor_component', synchronize: false })
+@Entity({ name: 'monitor_component' })
 export class MonitorComponent extends BaseEntity {
   @Column()
   name: string
