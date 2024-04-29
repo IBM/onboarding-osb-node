@@ -1,72 +1,56 @@
 {
-  "name": "onboarding-osb-node",
-  "version": "1.0.0",
-  "description": "Open Service Broker Reference App",
-  "private": true,
-  "main": "src/index.ts",
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/IBM/onboarding-osb-node.git"
-  },
-  "author": "Shohel Rana <cse_shohel@yahoo.com>",
-  "license": "MIT",
-  "scripts": {
-    "watch": "tsc -w",
-    "dev": "nodemon src/index.ts",
-    "start": "tsc && node dist/index.js",
-    "build": "tsc",
-    "test": "jest",
-    "start:dev": "concurrently \"npm run watch\" \"npm run dev\"",
-    "typeorm": "typeorm-ts-node-commonjs",
-    "migrate:generate": "yarn typeorm migration:generate ./src/db/migrations/osb -d ./src/db/data-source.ts",
-    "migrate": "yarn typeorm migration:run -d src/db/data-source.ts"
-  },
-  "engines": {
-    "node": ">=18.0.0"
-  },
-  "dependencies": {
-    "@types/cors": "^2.8.15",
-    "bcrypt": "^5.1.1",
-    "class-transformer": "^0.5.1",
-    "class-validator": "^0.14.1",
-    "dotenv": "^16.3.1",
-    "express": "^4.18.2",
-    "jsonwebtoken": "^9.0.2",
-    "memory-cache": "^0.2.0",
-    "pg": "^8.11.0",
-    "reflect-metadata": "^0.1.13",
-    "typeorm": "0.3.17"
-  },
-  "devDependencies": {
-    "@types/jest": "^27.0.3",
-    "@typescript-eslint/eslint-plugin": "^7.7.1",
-    "@typescript-eslint/parser": "^7.7.1",
-    "concurrently": "^7.0.0",
-    "eslint": "^8.57.0",
-    "jest": "^27.4.5",
-    "nodemon": "^3.1.0",
-    "ts-jest": "^27.1.1",
-    "ts-node": "^10.9.2",
-    "typescript": "^5.4.5"
-  },
-  "eslintConfig": {
-    "extends": [
-      "eslint:recommended",
-      "plugin:@typescript-eslint/recommended"
-    ],
-    "rules": {
-      "semi": [
-        "error",
-        "always"
-      ],
-      "quotes": [
-        "error",
-        "double"
-      ]
-    }
-  },
-  "prettier": {
-    "singleQuote": true,
-    "semi": false
-  }
+   "name": "onboarding-osb-node",
+   "version": "1.0.0",
+   "description": "Open Service Broker Reference App",
+   "private": true,
+   "main": "src/app.ts",
+   "repository": {
+      "type": "git",
+      "url": "https://github.com/IBM/onboarding-osb-node.git"
+   },
+   "author": "Shohel Rana <cse_shohel@yahoo.com>",
+   "license": "MIT",
+   "scripts": {
+      "watch": "tsc -w",
+      "dev": "nodemon src/app.ts",
+      "start": "tsc && node dist/app.js",
+      "build": "tsc",
+      "test": "jest",
+      "start:dev": "concurrently \"npm run watch\" \"npm run dev\"",
+      "typeorm": "typeorm-ts-node-commonjs",
+      "migrate:generate": "yarn typeorm migration:generate ./src/db/migrations/osb -d ./src/db/data-source.ts",
+      "migrate": "yarn typeorm migration:run -d src/db/data-source.ts"
+   },
+   "engines": {
+      "node": ">=18.0.0"
+   },
+   "dependencies": {
+      "@types/cors": "^2.8.15",
+      "bcrypt": "^5.1.1",
+      "class-transformer": "^0.5.1",
+      "class-validator": "^0.14.1",
+      "dotenv": "^16.3.1",
+      "express": "^4.18.2",
+      "jsonwebtoken": "^9.0.2",
+      "memory-cache": "^0.2.0",
+      "pg": "^8.11.0",
+      "reflect-metadata": "^0.1.13",
+      "typeorm": "0.3.17"
+   },
+   "devDependencies": {
+      "@types/jest": "^27.0.3",
+      "@typescript-eslint/eslint-plugin": "^7.7.1",
+      "@typescript-eslint/parser": "^7.7.1",
+      "concurrently": "^7.0.0",
+      "eslint": "^8.57.0",
+      "jest": "^27.4.5",
+      "nodemon": "^3.1.0",
+      "lint-staged": "^13.2.2",
+      "ts-jest": "^27.1.1",
+      "ts-node": "^10.9.2",
+      "typescript": "^5.4.5"
+   },
+   "lint-staged": {
+      "*.ts": "yarn lint"
+   }
 }

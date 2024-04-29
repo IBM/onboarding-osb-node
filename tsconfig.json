@@ -1,8 +1,8 @@
 {
   "compilerOptions": {
-    "target": "es2019",
+    "target": "es2022",
     "module": "commonjs",
-    "lib": ["es2019"],
+    "lib": ["es2022"],
     "moduleResolution": "node",
     "outDir": "./build",
     "rootDir": "./src",
@@ -17,6 +17,6 @@
     "esModuleInterop": true,
     "skipLibCheck": true
   },
-  "include": ["**/*"],
+  "include": ["src/**/*.ts"],
   "exclude": ["../node_modules", "**/*.spec.ts"]
 }
