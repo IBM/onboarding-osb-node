@@ -1,42 +1,40 @@
-import { Request, Response } from "express";
-import { AppDataSource } from "../db/dataSourceLocal.ts";
-import { User } from "../db/entities/User.entity";
-import { encrypt } from "../utils/encrypt";
+import { Request, Response } from 'express'
+import DataSourceLocal from '../db/dataSourceLocal'
+import { User } from '../db/entities/User.entity'
+import { encrypt } from '../utils/encrypt'
 
 export class AuthController {
   static async login(req: Request, res: Response) {
     try {
-      const { email, password } = req.body;
+      const { email, password } = req.body
       if (!email || !password) {
-        return res
-          .status(500)
-          .json({ message: " email and password required" });
+        return res.status(500).json({ message: ' email and password required' })
       }
 
-      const userRepository = AppDataSource.getRepository(User);
-      const user = await userRepository.findOne({ where: { email } });
+      const userRepository = DataSourceLocal.getRepository(User)
+      const user = await userRepository.findOne({ where: { email } })
 
-      const isPasswordValid = encrypt.comparepassword(user.password, password);
+      const isPasswordValid = encrypt.comparepassword(user.password, password)
       if (!user || !isPasswordValid) {
-        return res.status(404).json({ message: "User not found" });
+        return res.status(404).json({ message: 'User not found' })
       }
-      const token = encrypt.generateToken({ id: user.id });
+      const token = encrypt.generateToken({ id: user.id })
 
-      return res.status(200).json({ message: "Login successful", user, token });
+      return res.status(200).json({ message: 'Login successful', user, token })
     } catch (error) {
-      console.error(error);
-      return res.status(500).json({ message: "Internal server error" });
+      console.error(error)
+      return res.status(500).json({ message: 'Internal server error' })
     }
   }
 
   static async getProfile(req: Request, res: Response) {
-    if (!req[" currentUser"]) {
-      return res.status(401).json({ message: "Unauthorized" });
+    if (!req[' currentUser']) {
+      return res.status(401).json({ message: 'Unauthorized' })
     }
-    const userRepository = AppDataSource.getRepository(User);
+    const userRepository = DataSourceLocal.getRepository(User)
     const user = await userRepository.findOne({
-      where: { id: req[" currentUser"].id },
-    });
-    return res.status(200).json({ ...user, password: undefined });
+      where: { id: req[' currentUser'].id },
+    })
+    return res.status(200).json({ ...user, password: undefined })
   }
 }

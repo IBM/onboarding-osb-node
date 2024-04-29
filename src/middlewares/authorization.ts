@@ -1,17 +1,17 @@
-import { NextFunction, Request, Response } from "express";
-import { AppDataSource } from "../db/dataSourceLocal.ts";
-import { User } from "../db/entities/User.entity";
+import { NextFunction, Request, Response } from 'express'
+import DataSourceLocal from '../db/dataSourceLocal'
+import { User } from '../db/entities/User.entity'
 
 export const authorization = (roles: string[]) => {
   return async (req: Request, res: Response, next: NextFunction) => {
-    const userRepo = AppDataSource.getRepository(User);
+    const userRepo = DataSourceLocal.getRepository(User)
     const user = await userRepo.findOne({
-      where: { id: req[" currentUser"].id },
-    });
-    console.log(user);
+      where: { id: req[' currentUser'].id },
+    })
+    console.log(user)
     if (!roles.includes(user.role)) {
-      return res.status(403).json({ message: "Forbidden" });
+      return res.status(403).json({ message: 'Forbidden' })
     }
-    next();
-  };
-};
+    next()
+  }
+}

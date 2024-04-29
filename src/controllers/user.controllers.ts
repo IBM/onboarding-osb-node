@@ -1,5 +1,5 @@
 import { Request, Response } from 'express'
-import { AppDataSource } from '../db/dataSourceLocal.ts'
+import DataSource from '../db/dataSource'
 import { User } from '../db/entities/User.entity'
 import { encrypt } from '../utils/encrypt'
 import * as cache from 'memory-cache'
@@ -14,7 +14,7 @@ export class UserController {
     user.password = encryptedPassword
     user['role'] = role
 
-    const userRepository = AppDataSource.getRepository(User)
+    const userRepository = DataSource.getRepository(User)
     await userRepository.save(user)
 
     // userRepository.create({ Name, email, password });
@@ -33,7 +33,7 @@ export class UserController {
       })
     } else {
       console.log('serving from db')
-      const userRepository = AppDataSource.getRepository(User)
+      const userRepository = DataSource.getRepository(User)
       const users = await userRepository.find()
 
       cache.put('data', users, 6000)
@@ -45,7 +45,7 @@ export class UserController {
   static async updateUser(req: Request, res: Response) {
     const { id } = req.params
     const { name, email } = req.body
-    const userRepository = AppDataSource.getRepository(User)
+    const userRepository = DataSource.getRepository(User)
     const user = await userRepository.findOne({
       where: { id },
     })
@@ -57,7 +57,7 @@ export class UserController {
 
   static async deleteUser(req: Request, res: Response) {
     const { id } = req.params
-    const userRepository = AppDataSource.getRepository(User)
+    const userRepository = DataSource.getRepository(User)
     const user = await userRepository.findOne({
       where: { id },
     })
