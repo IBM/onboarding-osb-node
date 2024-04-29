@@ -25,7 +25,9 @@ module.exports = {
             { ignoreRestArgs: false }
         ],
         '@typescript-eslint/no-non-null-assertion': 'off',
-        '@typescript-eslint/no-non-null-asserted-optional-chain': 'off'
+        '@typescript-eslint/no-non-null-asserted-optional-chain': 'off',
+        "semi": ["error", "never"],
+        "@typescript-eslint/semi": ["error", "never"]
     },
     overrides: [
         {

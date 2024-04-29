@@ -1,10 +1,9 @@
 import 'reflect-metadata'
 import express, { Request, Response } from 'express'
 import dotenv from 'dotenv'
-import { userRouter } from './routes/user.routes'
-import { movieRouter } from './routes/movie.routes'
 import { errorHandler } from './middlewares/errorHandler'
 import DataSource from './db/data-source'
+import { AppRoutes } from './routes'
 
 dotenv.config()
 
@@ -19,8 +18,7 @@ const { PORT = 3000 } = process.env
 app.use(errorHandler)
 
 // Routes
-app.use('/auth', userRouter)
-app.use('/api', movieRouter)
+app.use(AppRoutes.routes)
 
 // Catch-all route for unmatched routes
 app.get('*', (req: Request, res: Response) => {
@@ -35,4 +33,4 @@ DataSource.initialize()
     })
     console.log('Data Source has been initialized!')
   })
-  .catch((error) => console.log(error))
+  .catch(error => console.log(error))
