@@ -1,7 +1,7 @@
 import * as express from "express";
-import { authentification } from "../middleware/authentification";
+import { authentification } from "../middlewares/authentification";
 import { MovieController } from "../controllers/movie.controllers";
-import { authorization } from "../middleware/authorization";
+import { authorization } from "../middlewares/authorization";
 
 const Router = express.Router();
 

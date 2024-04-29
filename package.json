@@ -18,8 +18,10 @@
     "test": "jest",
     "start:dev": "concurrently \"npm run watch\" \"npm run dev\"",
     "typeorm": "ts-node ./node_modules/typeorm/cli.js",
-    "migration:generate": "npx typeorm-ts-node-esm migration:generate -d ./src/db",
-    "migration": "npm run typeorm migration:run -- -d ./src/db"
+    "typeorm:generate": "npx typeorm-ts-node-esm migration:generate -d src/db/dataSourceLocal.ts",
+    "typeorm:migrate": "npx typeorm-ts-node-esm migration:run -d src/db/dataSourceLocal.ts",
+    "typeorm:revert": "npx typeorm-ts-node-esm migration:revert -d src/db/dataSourceLocal.ts",
+    "typeorm:drop": "npx typeorm-ts-node-esm schema:drop -d src/db/dataSourceLocal.ts"
   },
   "engines": {
     "node": ">=18.0.0"
