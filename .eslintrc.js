@@ -1,43 +1,24 @@
 module.exports = {
     root: true,
     parser: '@typescript-eslint/parser',
-    plugins: ['@typescript-eslint'],
-    rules: {
-        '@typescript-eslint/ban-types': [
-            'error',
-            {
-                types: {
-                    '{}': false
-                },
-                extendDefaults: true
-            }
-        ],
-        '@typescript-eslint/no-unused-vars': [
-            'error',
-            {
-                vars: 'all',
-                args: 'none',
-                ignoreRestSiblings: true
-            }
-        ],
-        '@typescript-eslint/no-explicit-any': [
-            'error',
-            { ignoreRestArgs: false }
-        ],
-        '@typescript-eslint/no-non-null-assertion': 'off',
-        '@typescript-eslint/no-non-null-asserted-optional-chain': 'off',
-        "semi": ["error", "never"],
-        "@typescript-eslint/semi": ["error", "never"]
-    },
-    overrides: [
-        {
-            files: ['*.ts'],
-            extends: [
-                'eslint:recommended',
-                'plugin:@typescript-eslint/recommended'
-            ],
-            parserOptions: { project: ['./tsconfig.json'] }
-        }
+    plugins: ['@typescript-eslint', 'prettier'],
+    extends: [
+        'eslint:recommended',
+        'plugin:@typescript-eslint/recommended',
+        'plugin:prettier/recommended'
     ],
-    ignorePatterns: ['*!.*', 'dist', 'build', 'node_modules']
+    parserOptions: {
+        ecmaVersion: 2022,
+        sourceType: 'module',
+        project: ['./tsconfig.json'],
+    },
+    rules: {
+        '@typescript-eslint/no-unused-vars': ['error', {
+            vars: 'all',
+            args: 'none',
+            ignoreRestSiblings: true
+        }],
+        '@typescript-eslint/no-explicit-any': 'warn',
+    },
+    ignorePatterns: ['node_modules/', 'dist/', 'build/'],
 };

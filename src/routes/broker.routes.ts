@@ -1,5 +1,5 @@
 import { Router } from 'express'
-import { BrokerController } from '../controllers/broker.controler'
+import { BrokerController } from '../controllers/broker.controller'
 import { BrokerServiceImpl } from '../services/impl/broker-impl.service'
 
 export class BrokerRoutes {

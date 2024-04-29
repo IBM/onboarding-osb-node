@@ -12,7 +12,7 @@ export class Context {
     platform: string,
     accountId: string,
     resourceGroupCrn: string,
-    targetCrn: string
+    targetCrn: string,
   ) {
     this.name = name
     this.crn = crn

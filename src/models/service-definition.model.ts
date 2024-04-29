@@ -37,7 +37,7 @@ export class ServiceDefinition extends BaseModel {
     tags: string[],
     metadata: Record<string, any>,
     requires: string[],
-    dashboardClient: DashboardClient
+    dashboardClient: DashboardClient,
   ) {
     super(id, createdAt, updatedAt)
     this.name = name
