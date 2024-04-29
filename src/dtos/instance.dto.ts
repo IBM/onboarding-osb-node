@@ -12,7 +12,7 @@ export class InstanceDto {
     planId: string,
     status: string,
     region: string,
-    updateDate: Date
+    updateDate: Date,
   ) {
     this.instanceId = instanceId
     this.name = name

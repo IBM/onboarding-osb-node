@@ -19,7 +19,7 @@ export class Plan extends BaseModel {
     name: string,
     description: string,
     metadata: Record<string, any>,
-    free: boolean
+    free: boolean,
   ) {
     super(id, createdAt, updatedAt)
     this.name = name

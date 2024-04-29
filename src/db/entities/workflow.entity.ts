@@ -1,7 +1,7 @@
 import { Column, Entity } from 'typeorm'
 import { BaseEntity } from './base.entity'
 
-@Entity({ name: "workflow" })
+@Entity({ name: 'workflow' })
 export class Workflow extends BaseEntity {
   @Column({ name: 'iam_id' })
   iamId: string

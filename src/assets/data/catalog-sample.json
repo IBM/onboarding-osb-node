@@ -25,12 +25,7 @@
   "iam_compatible": true,
   "plan_updateable": false,
   "unique_api_key": false,
-  "tags": [
-    "rc_compatible",
-    "lite",
-    "ibm_release",
-    "ibm_created"
-  ],
+  "tags": ["rc_compatible", "lite", "ibm_release", "ibm_created"],
   "name": "helloservice",
   "id": "service123",
   "description": "OSB Broker Demo",

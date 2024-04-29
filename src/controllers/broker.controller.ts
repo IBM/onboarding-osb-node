@@ -7,7 +7,7 @@ export class BrokerController {
   public getCatalog = async (
     req: Request,
     res: Response,
-    next: NextFunction
+    next: NextFunction,
   ): Promise<void> => {
     try {
       const catalog = await this.brokerService.getCatalog()

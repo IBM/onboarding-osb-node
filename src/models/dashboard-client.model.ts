@@ -9,7 +9,7 @@ export class DashboardClient extends BaseModel {
     createdAt: Date,
     updatedAt: Date,
     secret: string,
-    redirectUri: string
+    redirectUri: string,
   ) {
     super(id, createdAt, updatedAt)
     this.secret = secret

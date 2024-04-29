@@ -4,6 +4,6 @@ export interface ServiceInstanceRepository {
   getInstancesForUsage(): Promise<ServiceInstance[]>
   findByInstanceIdAndStatusNotIn(
     instanceId: string,
-    status: string[]
+    status: string[],
   ): Promise<ServiceInstance[]>
 }
