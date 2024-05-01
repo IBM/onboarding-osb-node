@@ -7,9 +7,9 @@ export class AppRoutes {
   static get routes(): Router {
     const router = Router()
 
-    router.use('/broker', BrokerRoutes.routes)
-    router.use('/support', SupportInfoRoutes.routes)
-    router.use('/usage', UsageRoutes.routes)
+    router.use('/', BrokerRoutes.routes)
+    router.use('/', SupportInfoRoutes.routes)
+    router.use('/', UsageRoutes.routes)
 
     return router
   }

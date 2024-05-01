@@ -1,3 +1,6 @@
+import { InstanceDto } from '../models/instance.dto'
+
 export interface SupportInfoService {
-  getCatalog(): Promise<string>
+  getServiceInstances(): Promise<InstanceDto[]>
+  getMetadata(): Promise<string>
 }
