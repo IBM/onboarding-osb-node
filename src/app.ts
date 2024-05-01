@@ -1,6 +1,8 @@
 import 'reflect-metadata'
 import express, { Request, Response } from 'express'
 import dotenv from 'dotenv'
+import Logger from './utils/logger'
+
 import { errorHandler } from './middlewares/errorHandler'
 import DataSource from './db/data-source'
 import { AppRoutes } from './routes'
@@ -29,8 +31,8 @@ app.get('*', (req: Request, res: Response) => {
 DataSource.initialize()
   .then(() => {
     app.listen(PORT, () => {
-      console.log('Server is running on http://localhost:' + PORT)
+      Logger.info(`Server is running on http://localhost:${PORT}`)
     })
-    console.log('Data Source has been initialized!')
+    Logger.info('Data Source has been initialized!')
   })
   .catch(error => console.log(error))
