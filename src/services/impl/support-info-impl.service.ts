@@ -4,7 +4,7 @@ import { InstanceDto } from '../../models/instance.dto'
 import { ServiceInstance } from '../../db/entities/service-instance.entity'
 
 export class SupportInfoServiceImpl implements SupportInfoService {
-  constructor(private serviceInstanceRepository: ServiceInstanceRepository) {}
+  private serviceInstanceRepository: ServiceInstanceRepository
 
   async getServiceInstances(): Promise<InstanceDto[]> {
     const instances = undefined //await this.serviceInstanceRepository.findAll()
