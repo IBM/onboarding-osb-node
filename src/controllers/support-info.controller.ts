@@ -10,7 +10,7 @@ export class SupportInfoController {
     next: NextFunction,
   ): Promise<void> => {
     try {
-      const catalog = await this.supportInfoService.getCatalog()
+      const catalog = undefined //await this.supportInfoService.getCatalog()
       res.json(catalog)
     } catch (error) {
       res.status(500).send('Error retrieving catalog')

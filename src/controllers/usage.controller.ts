@@ -10,7 +10,7 @@ export class UsageController {
     next: NextFunction,
   ): Promise<void> => {
     try {
-      const catalog = await this.usageService.getCatalog()
+      const catalog = undefined //await this.usageService.sendUsageData()
       res.json(catalog)
     } catch (error) {
       res.status(500).send('Error retrieving catalog')
