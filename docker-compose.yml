@@ -1,0 +1,41 @@
+version: '3.8'
+
+services:
+  app:
+    build: .
+    ports:
+      - "3001:3001"
+    environment:
+      NODE_ENV: development
+      DB_HOST: postgres
+      DB_PORT: 5432
+      DB_USER: postgres
+      DB_USER_PWD: postgres
+      DB_NAME: osbnode
+      JWT_SECRET: 123456
+      PORT: 3001
+      BROKER_USERNAME: admin
+      BROKER_PASSWORD: admin
+      DASHBOARD_URL: http://localhost:8080
+      CORS_URL: "*"
+      TZ: UTC
+    volumes:
+      - .:/usr/src/app
+      - /usr/src/app/node_modules
+    depends_on:
+      - postgres
+    command: yarn start:dev
+
+  postgres:
+    image: postgres:13
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: osbnode
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+volumes:
+  postgres_data:

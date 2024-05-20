@@ -1,45 +1,56 @@
-import { IsNotEmpty } from 'class-validator'
-import { BaseModel } from './base.model'
-import { DashboardClient } from './dashboard-client.model'
+import { IsNotEmpty, IsBoolean, IsString, IsOptional } from 'class-validator'
 import { Plan } from './plan.model'
+import { DashboardClient } from './dashboard-client.model'
 
-export class ServiceDefinition extends BaseModel {
+export class ServiceDefinition {
   @IsNotEmpty()
+  @IsString()
+  id: string
+
+  @IsNotEmpty()
+  @IsString()
   name: string
 
   @IsNotEmpty()
+  @IsString()
   description: string
 
+  @IsNotEmpty()
+  @IsBoolean()
   bindable: boolean
 
-  planUpdateable: boolean
+  @IsOptional()
+  @IsBoolean()
+  planUpdateable?: boolean
 
   @IsNotEmpty()
   plans: Plan[]
 
-  tags: string[]
+  @IsOptional()
+  tags?: string[]
 
-  metadata: Record<string, any>
+  @IsOptional()
+  metadata?: Record<string, any>
 
-  requires: string[]
+  @IsOptional()
+  requires?: string[]
 
-  dashboardClient: DashboardClient
+  @IsOptional()
+  dashboardClient?: DashboardClient
 
   constructor(
     id: string,
-    createdAt: Date,
-    updatedAt: Date,
     name: string,
     description: string,
     bindable: boolean,
-    planUpdateable: boolean,
     plans: Plan[],
-    tags: string[],
-    metadata: Record<string, any>,
-    requires: string[],
-    dashboardClient: DashboardClient,
+    planUpdateable?: boolean,
+    tags?: string[],
+    metadata?: Record<string, any>,
+    requires?: string[],
+    dashboardClient?: DashboardClient,
   ) {
-    super(id, createdAt, updatedAt)
+    this.id = id
     this.name = name
     this.description = description
     this.bindable = bindable
@@ -52,6 +63,6 @@ export class ServiceDefinition extends BaseModel {
   }
 
   toString(): string {
-    return `ServiceDefinition{id='${this.id}', createdAt='${this.createdAt}', updatedAt='${this.updatedAt}', name='${this.name}', description='${this.description}', bindable=${this.bindable}, planUpdateable=${this.planUpdateable}, plans=${this.plans}, tags=${this.tags}, metadata=${this.metadata}, requires=${this.requires}, dashboardClient=${this.dashboardClient}}`
+    return `ServiceDefinition{id='${this.id}', name='${this.name}', description='${this.description}', bindable=${this.bindable}, planUpdateable=${this.planUpdateable}, plans=${JSON.stringify(this.plans)}, tags=${this.tags}, metadata=${this.metadata}, requires=${this.requires}, dashboardClient=${this.dashboardClient}}`
   }
 }

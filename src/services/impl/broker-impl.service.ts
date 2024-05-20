@@ -1,105 +1,257 @@
 import { BrokerService } from '../broker.service'
 import fs from 'fs'
-import path from 'path'
 import { promisify } from 'util'
-// import { db } from '../database'
-// import { logger } from '../utils/logger'
 import { Catalog } from '../../models/catalog.model'
+import { CreateServiceInstanceRequest } from '../../models/create-service-instance-request.model'
+import { ServiceDefinition } from '../../models/service-definition.model'
+import { UpdateStateRequest } from '../../models/update-state-request.model'
+import { ServiceInstanceStateResponse } from '../../models/response/service-instance-state-response.model'
+import Logger from '../../utils/logger'
+import { getRepository, FindOneOptions } from 'typeorm'
+import { ServiceInstance } from '../../db/entities/service-instance.entity'
 
 export class BrokerServiceImpl implements BrokerService {
   dashboardUrl: string = process.env.DASHBOARD_URL || 'http://example.com'
   private catalog: Catalog
 
-  // async importCatalog(file: Express.Multer.File): Promise<string> {
-  //   const readFile = promisify(fs.readFile)
-  //   try {
-  //     const data = await readFile(file.path, { encoding: 'utf8' })
-  //     const catalogData = JSON.parse(data)
-  //     this.catalog.updateCatalog(catalogData)
-  //     return JSON.stringify(catalogData)
-  //   } catch (error) {
-  //     logger.error('Failed to import catalog:', error)
-  //     throw new Error('Error processing catalog file')
-  //   }
-  // }
+  async importCatalog(file: Express.Multer.File): Promise<string> {
+    const readFile = promisify(fs.readFile)
+    try {
+      const data = await readFile(file.path, { encoding: 'utf8' })
+      const catalogData = JSON.parse(data)
+      const serviceDefinitions = catalogData.services.map(
+        (service: any) =>
+          new ServiceDefinition(
+            service.id,
+            service.name,
+            service.description,
+            service.bindable,
+            service.plans,
+            service.planUpdateable,
+            service.tags,
+            service.metadata,
+            service.requires,
+            service.dashboardClient,
+          ),
+      )
+      this.catalog = new Catalog(serviceDefinitions)
+      return JSON.stringify(catalogData)
+    } catch (error) {
+      Logger.error('Failed to import catalog:', error)
+      throw new Error('Error processing catalog file')
+    }
+  }
 
   async getCatalog(): Promise<string> {
     return JSON.stringify(this.catalog)
   }
 
-  // async provision(instanceId: string, details: any): Promise<string> {
-  //   try {
-  //     const serviceInstance = new ServiceInstance({
-  //       instanceId,
-  //       ...details,
-  //     })
-  //     await db.saveServiceInstance(serviceInstance)
-  //     return JSON.stringify({
-  //       message: 'Service instance created',
-  //       instanceId: instanceId,
-  //     })
-  //   } catch (error) {
-  //     logger.error('Error provisioning service instance:', error)
-  //     throw new Error('Error provisioning service instance')
-  //   }
-  // }
+  async provision(
+    instanceId: string,
+    details: any,
+    iamId: string,
+    region: string,
+  ): Promise<string> {
+    try {
+      const createServiceRequest = new CreateServiceInstanceRequest(details)
+      createServiceRequest.instanceId = instanceId
 
-  // async deprovision(instanceId: string): Promise<string> {
-  //   try {
-  //     await db.deleteServiceInstance(instanceId)
-  //     return JSON.stringify({
-  //       message: 'Service instance deprovisioned',
-  //       instanceId: instanceId,
-  //     })
-  //   } catch (error) {
-  //     logger.error('Error deprovisioning service instance:', error)
-  //     throw new Error('Error deprovisioning service instance')
-  //   }
-  // }
+      const plan = this.catalog
+        .getServiceDefinitions()[0]
+        .plans.find(p => p.id === createServiceRequest.planId)
+      if (!plan) {
+        Logger.error(
+          `Plan id:${createServiceRequest.planId} does not belong to this service: ${createServiceRequest.serviceId}`,
+        )
+        throw new Error(`Invalid plan id: ${createServiceRequest.planId}`)
+      }
 
-  // async update(instanceId: string, updateData: any): Promise<string> {
-  //   try {
-  //     await db.updateServiceInstance(instanceId, updateData)
-  //     return JSON.stringify({
-  //       message: 'Service instance updated',
-  //       instanceId: instanceId,
-  //     })
-  //   } catch (error) {
-  //     logger.error('Error updating service instance:', error)
-  //     throw new Error('Error updating service instance')
-  //   }
-  // }
+      const serviceInstance = this.getServiceInstanceEntity(
+        createServiceRequest,
+        iamId,
+        region,
+      )
+      await getRepository(ServiceInstance).save(serviceInstance)
 
-  // async lastOperation(instanceId: string): Promise<string> {
-  //   try {
-  //     const operation = await db.getLastOperation(instanceId)
-  //     return JSON.stringify(operation)
-  //   } catch (error) {
-  //     logger.error('Error fetching last operation:', error)
-  //     throw new Error('Error fetching last operation')
-  //   }
-  // }
+      const response = {
+        dashboard_url: `${this.dashboardUrl}/provision_status?type=${this.catalog.getServiceDefinitions()[0].name}&instance_id=${instanceId}`,
+      }
 
-  // async updateState(instanceId: string, updateData: any): Promise<string> {
-  //   try {
-  //     await db.updateServiceInstanceState(instanceId, updateData)
-  //     return JSON.stringify({
-  //       message: 'State updated',
-  //       instanceId: instanceId,
-  //     })
-  //   } catch (error) {
-  //     logger.error('Error updating instance state:', error)
-  //     throw new Error('Error updating instance state')
-  //   }
-  // }
+      return JSON.stringify(response)
+    } catch (error) {
+      Logger.error('Error provisioning service instance:', error)
+      throw new Error('Error provisioning service instance')
+    }
+  }
 
-  // async getState(instanceId: string): Promise<string> {
-  //   try {
-  //     const state = await db.getServiceInstanceState(instanceId)
-  //     return JSON.stringify(state)
-  //   } catch (error) {
-  //     logger.error('Error getting instance state:', error)
-  //     throw new Error('Error getting instance state')
-  //   }
-  // }
+  async deprovision(
+    instanceId: string,
+    planId: string,
+    serviceId: string,
+    iamId: string,
+  ): Promise<string> {
+    try {
+      await getRepository(ServiceInstance).delete({ instanceId })
+      const response = { description: 'Deprovisioned' }
+      return JSON.stringify(response)
+    } catch (error) {
+      Logger.error('Error deprovisioning service instance:', error)
+      throw new Error('Error deprovisioning service instance')
+    }
+  }
+
+  async update(
+    instanceId: string,
+    updateData: any,
+    iamId: string,
+    region: string,
+  ): Promise<string> {
+    try {
+      await getRepository(ServiceInstance).update({ instanceId }, updateData)
+      const response = {
+        message: 'Service instance updated',
+        instanceId: instanceId,
+      }
+      return JSON.stringify(response)
+    } catch (error) {
+      Logger.error('Error updating service instance:', error)
+      throw new Error('Error updating service instance')
+    }
+  }
+
+  async lastOperation(instanceId: string, iamId: string): Promise<string> {
+    try {
+      const operation = await getRepository(ServiceInstance).findOne({
+        where: { instanceId },
+      } as FindOneOptions<ServiceInstance>)
+
+      if (!operation) {
+        throw new Error('Service instance not found')
+      }
+
+      const response = { state: 'succeeded' }
+      return JSON.stringify(response)
+    } catch (error) {
+      Logger.error('Error fetching last operation:', error)
+      throw new Error('Error fetching last operation')
+    }
+  }
+
+  async updateState(
+    instanceId: string,
+    updateData: any,
+    iamId: string,
+  ): Promise<string> {
+    try {
+      const updateStateRequest = new UpdateStateRequest(updateData)
+      await getRepository(ServiceInstance).update(
+        { instanceId },
+        { enabled: updateStateRequest.enabled },
+      )
+      const response = new ServiceInstanceStateResponse({
+        active: updateStateRequest.enabled,
+        enabled: updateStateRequest.enabled,
+      })
+      return JSON.stringify(response)
+    } catch (error) {
+      Logger.error('Error updating instance state:', error)
+      throw new Error('Error updating instance state')
+    }
+  }
+
+  async getState(instanceId: string, iamId: string): Promise<string> {
+    try {
+      const state = await getRepository(ServiceInstance).findOne({
+        where: { instanceId },
+      } as FindOneOptions<ServiceInstance>)
+
+      if (!state) {
+        throw new Error('Service instance not found')
+      }
+
+      const response = new ServiceInstanceStateResponse({
+        active: false,
+        enabled: false,
+      })
+      return JSON.stringify(response)
+    } catch (error) {
+      Logger.error('Error getting instance state:', error)
+      throw new Error('Error getting instance state')
+    }
+  }
+
+  async bind(
+    instanceId: string,
+    bindingId: string,
+    details: any,
+  ): Promise<string> {
+    try {
+      const serviceInstance = await getRepository(ServiceInstance).findOne({
+        where: { instanceId },
+      } as FindOneOptions<ServiceInstance>)
+
+      if (!serviceInstance) {
+        throw new Error('Service instance not found')
+      }
+      // Perform binding logic here
+      const response = {
+        message: 'Service instance bound',
+        instanceId: instanceId,
+        bindingId: bindingId,
+      }
+      return JSON.stringify(response)
+    } catch (error) {
+      Logger.error('Error binding service instance:', error)
+      throw new Error('Error binding service instance')
+    }
+  }
+
+  async unbind(
+    instanceId: string,
+    bindingId: string,
+    planId: string,
+    serviceId: string,
+  ): Promise<string> {
+    try {
+      const serviceInstance = await getRepository(ServiceInstance).findOne({
+        where: { instanceId },
+      } as FindOneOptions<ServiceInstance>)
+
+      if (!serviceInstance) {
+        throw new Error('Service instance not found')
+      }
+      // Perform unbinding logic here
+      const response = {
+        message: 'Service instance unbound',
+        instanceId: instanceId,
+        bindingId: bindingId,
+      }
+      return JSON.stringify(response)
+    } catch (error) {
+      Logger.error('Error unbinding service instance:', error)
+      throw new Error('Error unbinding service instance')
+    }
+  }
+
+  private getServiceInstanceEntity(
+    request: CreateServiceInstanceRequest,
+    iamId: string,
+    region: string,
+  ): ServiceInstance {
+    const instance = new ServiceInstance()
+    instance.instanceId = request.instanceId
+    instance.name = request.context?.name
+    instance.serviceId = request.serviceId
+    instance.planId = request.planId
+    instance.iamId = iamId
+    instance.region = region
+    instance.context = JSON.stringify(request.context)
+    instance.parameters = JSON.stringify(request.parameters)
+    instance.status = 'ACTIVE'
+    instance.enabled = true
+    instance.createDate = new Date()
+    instance.updateDate = new Date()
+
+    return instance
+  }
 }

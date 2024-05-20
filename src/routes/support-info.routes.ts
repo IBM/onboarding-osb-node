@@ -9,7 +9,8 @@ export class SupportInfoRoutes {
     const service = new SupportInfoServiceImpl()
     const controller = new SupportInfoController(service)
 
-    router.get('/v2/catalog', controller.getCatalog)
+    router.get('/support/instances', controller.getInstances)
+    router.get('/support/metadata', controller.getMetadata)
 
     return router
   }

@@ -1,6 +1,6 @@
 export interface MeteringPayload {
-  userId: string
-  usage: number
-  startTime: Date
-  endTime: Date
+  start: number
+  end: number
+  measure: string
+  quantity: number
 }
