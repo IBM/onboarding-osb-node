@@ -9,7 +9,17 @@ export class Catalog {
     this.services = services
   }
 
-  toString(): string {
-    return `Catalog{services=${this.services}}`
+  public getServiceDefinitions(): ServiceDefinition[] {
+    return this.services
+  }
+
+  public toJSON(): string {
+    return JSON.stringify({
+      serviceDefinitions: this.services,
+    })
+  }
+
+  public toString(): string {
+    return `Catalog{serviceDefinitions=${JSON.stringify(this.services)}}`
   }
 }

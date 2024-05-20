@@ -36,4 +36,7 @@ export class ServiceInstance extends BaseEntity {
 
   @Column({ name: 'update_date', type: 'timestamp' })
   updateDate: Date
+
+  @Column()
+  enabled: boolean
 }

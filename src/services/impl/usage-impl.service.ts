@@ -11,11 +11,13 @@ export class UsageServiceImpl implements UsageService {
     resourceId: string,
     meteringPayload: MeteringPayload,
   ): Promise<string> {
-    if (!meteringPayload.startTime) {
-      // meteringPayload.startTime = Date.now() - 3600000 // Set start time to 1 hour ago if not provided
+    if (!meteringPayload.start) {
+      const startTime = Date.now() - 3600000 // Set start time to 1 hour ago if not provided
+      meteringPayload.start = startTime
     }
-    if (!meteringPayload.endTime) {
-      // meteringPayload.endTime = Date.now() // Set end time to current time if not provided
+    if (!meteringPayload.end) {
+      const endTime = Date.now() // Set end time to current time if not provided
+      meteringPayload.end = endTime
     }
 
     const iamAccessToken = await this.getIamAccessToken()

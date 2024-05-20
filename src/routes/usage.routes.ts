@@ -9,7 +9,7 @@ export class UsageRoutes {
     const service = new UsageServiceImpl()
     const controller = new UsageController(service)
 
-    router.get('/v2/catalog', controller.getCatalog)
+    router.post('/metering/:resourceId/usage', controller.sendUsageData)
 
     return router
   }

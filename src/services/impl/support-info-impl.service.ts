@@ -1,13 +1,13 @@
 import { SupportInfoService } from '../support-info.service'
-import { ServiceInstanceRepository } from '../../db/repositories/service-instance.repository'
 import { InstanceDto } from '../../models/instance.dto'
 import { ServiceInstance } from '../../db/entities/service-instance.entity'
+import { getRepository } from 'typeorm'
 
 export class SupportInfoServiceImpl implements SupportInfoService {
-  private serviceInstanceRepository: ServiceInstanceRepository
+  private serviceInstanceRepository = getRepository(ServiceInstance)
 
   async getServiceInstances(): Promise<InstanceDto[]> {
-    const instances = undefined //await this.serviceInstanceRepository.findAll()
+    const instances = await this.serviceInstanceRepository.find()
     const instanceDtos: InstanceDto[] = instances.map(ins =>
       this.mapToInstanceDto(ins),
     )
