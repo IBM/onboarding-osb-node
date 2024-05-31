@@ -22,7 +22,7 @@ const connectionOptions: DataSourceOptions = {
   subscribers: [__dirname + '/subscribers/**/*.ts'],
 }
 
-console.log('DB Configuration:', connectionOptions)
+// console.log('DB Configuration:', connectionOptions)
 
 const AppDataSource = new DataSource(connectionOptions)
 
