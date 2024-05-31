@@ -22,9 +22,6 @@ services:
     volumes:
       - .:/usr/src/app
       - /usr/src/app/node_modules
-    depends_on:
-      - postgres
-    # command: ./wait-for-it.sh ${DB_HOST}:${DB_PORT} -- yarn start:dev
 
   postgres:
     image: postgres:13
