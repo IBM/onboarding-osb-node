@@ -19,6 +19,9 @@ RUN cp .env.example .env
 # Install nodemon globally for development
 RUN yarn global add nodemon
 
+# Ensure wait-for-it.sh is executable
+# RUN chmod +x wait-for-it.sh
+
 # Expose the port the app runs on
 EXPOSE 3001
 
