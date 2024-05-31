@@ -1,27 +1,29 @@
 import 'reflect-metadata'
-import * as dotenv from 'dotenv'
+import dotenv from 'dotenv'
 import { DataSource } from 'typeorm'
-import { DataSourceOptions } from 'typeorm/data-source/DataSourceOptions'
+import { DataSourceOptions } from 'typeorm'
 
 dotenv.config()
 
 const { DB_HOST, DB_PORT, DB_USER, DB_USER_PWD, DB_NAME, NODE_ENV } =
   process.env
 
-let connectionOptions: DataSourceOptions = {
-  type: 'postgres' as 'postgres',
+const connectionOptions: DataSourceOptions = {
+  type: 'postgres',
   host: DB_HOST,
-  port: parseInt(DB_PORT || '5432'),
+  port: parseInt(DB_PORT || '5432', 10),
   username: DB_USER,
   password: DB_USER_PWD,
   database: DB_NAME,
-  synchronize: NODE_ENV === 'development' ? false : false,
-  logging: NODE_ENV === 'development' ? false : false,
-  entities: ['src/db/entities/**/*.entity.ts'],
-  migrations: ['src/db/migrations/**/*.ts'],
-  subscribers: ['src/db/subscribers/**/*.ts'],
+  synchronize: NODE_ENV === 'development',
+  logging: NODE_ENV === 'development',
+  entities: [__dirname + '/entities/**/*.ts'],
+  migrations: [__dirname + '/migrations/**/*.ts'],
+  subscribers: [__dirname + '/subscribers/**/*.ts'],
 }
 
-export default new DataSource({
-  ...connectionOptions,
-})
+console.log('DB Configuration:', connectionOptions)
+
+const AppDataSource = new DataSource(connectionOptions)
+
+export default AppDataSource
