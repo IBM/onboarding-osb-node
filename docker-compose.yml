@@ -7,7 +7,7 @@ services:
       - "3001:3001"
     environment:
       NODE_ENV: ${NODE_ENV}
-      DB_HOST: ${DB_HOST}
+      DB_HOST: postgres
       DB_PORT: ${DB_PORT}
       DB_USER: ${DB_USER}
       DB_USER_PWD: ${DB_USER_PWD}
@@ -22,6 +22,8 @@ services:
     volumes:
       - .:/usr/src/app
       - /usr/src/app/node_modules
+    depends_on:
+      - postgres
 
   postgres:
     image: postgres:13

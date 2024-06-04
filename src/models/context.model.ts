@@ -1,24 +1,34 @@
-export class Context {
-  name: string
-  crn: string
-  platform: string
-  accountId: string
-  resourceGroupCrn: string
-  targetCrn: string
+import { IsNotEmpty, IsString, IsOptional } from 'class-validator'
+import { Type } from 'class-transformer'
 
-  constructor(
-    name: string,
-    crn: string,
-    platform: string,
-    accountId: string,
-    resourceGroupCrn: string,
-    targetCrn: string,
-  ) {
-    this.name = name
-    this.crn = crn
-    this.platform = platform
-    this.accountId = accountId
-    this.resourceGroupCrn = resourceGroupCrn
-    this.targetCrn = targetCrn
-  }
+export class Context {
+  @IsNotEmpty()
+  @IsString()
+  @Type(() => String)
+  account_id: string
+
+  @IsNotEmpty()
+  @IsString()
+  @Type(() => String)
+  resource_group_crn: string
+
+  @IsNotEmpty()
+  @IsString()
+  @Type(() => String)
+  target_crn: string
+
+  @IsNotEmpty()
+  @IsString()
+  @Type(() => String)
+  name: string
+
+  @IsNotEmpty()
+  @IsString()
+  @Type(() => String)
+  crn: string
+
+  @IsNotEmpty()
+  @IsString()
+  @Type(() => String)
+  platform: string
 }
