@@ -11,8 +11,38 @@ export class BrokerRoutes {
     const controller = new BrokerController(service)
     const upload = multer({ dest: 'uploads/' })
 
+    /**
+     * PUT /v2/catalog
+     *
+     * Route to import a catalog file. This endpoint allows for the uploading of a single file to import the catalog data.
+     *
+     * @route PUT /v2/catalog
+     * @param {Request} req - Express request object, with the uploaded file available at req.file
+     * @param {Response} res - Express response object
+     * @param {Function} next - Express middleware function for error handling
+     *
+     * @middleware upload.single('file') - Middleware to handle single file upload
+     * @controller importCatalog - Controller method to handle the catalog import logic
+     *
+     * @throws {Error} If there is an issue with the file upload or catalog import process
+     */
     router.put('/v2/catalog', upload.single('file'), controller.importCatalog)
+
+    /**
+     * GET /v2/catalog
+     *
+     * Route to get the catalog, returning services and plans.
+     *
+     * @route GET /v2/catalog
+     * @param {Request} req - Express request object
+     * @param {Response} res - Express response object
+     * @param {Function} next - Express middleware function for error handling
+     *
+     * @returns {Object} The catalog containing services and plans
+     * @throws {Error} If there is an issue retrieving the catalog
+     */
     router.get('/v2/catalog', controller.getCatalog)
+
     router.put('/v2/service_instances/:instanceId', controller.provision)
     router.put(
       '/bluemix_v1/service_instances/:instanceId',

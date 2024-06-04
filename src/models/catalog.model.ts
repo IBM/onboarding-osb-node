@@ -13,12 +13,6 @@ export class Catalog {
     return this.services
   }
 
-  public toJSON(): string {
-    return JSON.stringify({
-      serviceDefinitions: this.services,
-    })
-  }
-
   public toString(): string {
     return `Catalog{serviceDefinitions=${JSON.stringify(this.services)}}`
   }

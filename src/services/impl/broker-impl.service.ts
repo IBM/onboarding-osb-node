@@ -16,26 +16,30 @@ export class BrokerServiceImpl implements BrokerService {
 
   async importCatalog(file: Express.Multer.File): Promise<string> {
     const readFile = promisify(fs.readFile)
+
     try {
       const data = await readFile(file.path, { encoding: 'utf8' })
-      const catalogData = JSON.parse(data)
-      const serviceDefinitions = catalogData.services.map(
+      const catalogJson = JSON.parse(data)
+
+      const serviceDefinitions = catalogJson.services.map(
         (service: any) =>
           new ServiceDefinition(
             service.id,
             service.name,
             service.description,
-            service.bindable,
             service.plans,
-            service.planUpdateable,
+            service.bindable,
+            service.plan_updateable,
             service.tags,
             service.metadata,
             service.requires,
-            service.dashboardClient,
+            service.dashboard_client,
           ),
       )
       this.catalog = new Catalog(serviceDefinitions)
-      return JSON.stringify(catalogData)
+      Logger.info('Imported catalog: {}', this.catalog)
+
+      return JSON.stringify(catalogJson)
     } catch (error) {
       Logger.error('Failed to import catalog:', error)
       throw new Error('Error processing catalog file')

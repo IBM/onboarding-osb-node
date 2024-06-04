@@ -15,9 +15,9 @@ export class ServiceDefinition {
   @IsString()
   description: string
 
-  @IsNotEmpty()
+  @IsOptional()
   @IsBoolean()
-  bindable: boolean
+  bindable?: boolean
 
   @IsOptional()
   @IsBoolean()
@@ -42,8 +42,8 @@ export class ServiceDefinition {
     id: string,
     name: string,
     description: string,
-    bindable: boolean,
     plans: Plan[],
+    bindable?: boolean,
     planUpdateable?: boolean,
     tags?: string[],
     metadata?: Record<string, any>,
@@ -53,9 +53,9 @@ export class ServiceDefinition {
     this.id = id
     this.name = name
     this.description = description
+    this.plans = plans
     this.bindable = bindable
     this.planUpdateable = planUpdateable
-    this.plans = plans
     this.tags = tags
     this.metadata = metadata
     this.requires = requires
