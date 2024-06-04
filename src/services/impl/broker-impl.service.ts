@@ -12,6 +12,7 @@ import { ServiceInstance } from '../../db/entities/service-instance.entity'
 import BrokerUtil from '../../utils/brokerUtil'
 import { CatalogUtil } from '../../utils/catalogUtil'
 import { ServiceInstanceStatus } from '../../enums/service-instance-status'
+import AppDataSource from '../../db/data-source'
 
 export class BrokerServiceImpl implements BrokerService {
   dashboardUrl: string = process.env.DASHBOARD_URL || 'http://localhost:8080'
@@ -64,9 +65,10 @@ export class BrokerServiceImpl implements BrokerService {
     region: string,
   ): Promise<string> {
     try {
+      console.log("iamId", iamId, region)
       const createServiceRequest = new CreateServiceInstanceRequest(details)
       createServiceRequest.instanceId = instanceId
-
+      console.log("plan", createServiceRequest)
       if (
         createServiceRequest.context &&
         createServiceRequest.context.platform === BrokerUtil.IBM_CLOUD
@@ -83,14 +85,16 @@ export class BrokerServiceImpl implements BrokerService {
           )
           throw new Error(`Invalid plan id: ${createServiceRequest.plan_id}`)
         }
-
+        console.log("plan", plan)
         const serviceInstance = this.getServiceInstanceEntity(
           createServiceRequest,
           iamId,
           region,
         )
 
-        await getRepository(ServiceInstance).save(serviceInstance)
+        const serviceInstanceRepository =
+          AppDataSource.getRepository(ServiceInstance)
+        await serviceInstanceRepository.save(serviceInstance)
 
         Logger.info(
           `Service Instance created: instanceId: ${instanceId} status: ${serviceInstance.status} planId: ${plan.id}`,
@@ -289,6 +293,8 @@ export class BrokerServiceImpl implements BrokerService {
     iamId: string,
     region: string,
   ): ServiceInstance {
+    console.log("request.context", request.context)
+    console.log(request.parameters)
     const instance = new ServiceInstance()
     instance.instanceId = request.instanceId
     instance.name = request.context?.name
@@ -296,8 +302,8 @@ export class BrokerServiceImpl implements BrokerService {
     instance.planId = request.plan_id
     instance.iamId = iamId
     instance.region = region
-    instance.context = JSON.stringify(request.context)
-    instance.parameters = JSON.stringify(request.parameters)
+    // instance.context = JSON.stringify(request.context)
+    // instance.parameters = JSON.stringify(request.parameters)
     instance.status = ServiceInstanceStatus.ACTIVE
     instance.enabled = true
     instance.createDate = new Date()

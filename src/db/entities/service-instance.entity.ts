@@ -1,4 +1,3 @@
-import e from 'cors'
 import { Entity, Column } from 'typeorm'
 import { BaseEntity } from './base.entity'
 
