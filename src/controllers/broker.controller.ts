@@ -1,7 +1,7 @@
 import { Request, Response } from 'express'
 import { BrokerService } from '../services/broker.service'
 import Logger from '../utils/logger'
-import BrokerUtil from '../utils/broker'
+import BrokerUtil from '../utils/brokerUtil'
 
 export class BrokerController {
   constructor(private brokerService: BrokerService) {}

@@ -15,18 +15,23 @@ class BrokerUtil {
   static ERROR = 'error'
   static DASHBOARD_URL = 'dashboard_url'
   static IBM_IUID_PREFIX = 'IBMid-'
+
+  // test monitor instance
   static TEST_INSTANCE_ID = 'crnTest111'
 
   static getIamId(req: Request): string | null {
     const originatingIdentity = req.header(this.ORIGINATING_IDENTITY_HEADER)
+
     if (originatingIdentity) {
       const strings = originatingIdentity.split(' ')
       const decoded = Base64.decode(strings[1])
       const iam: IAMIdentity = JSON.parse(decoded)
+
       if (iam && iam.iam_id) {
         return iam.iam_id
       }
     }
+
     return null
   }
 
