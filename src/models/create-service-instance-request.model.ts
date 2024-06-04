@@ -12,12 +12,12 @@ export class CreateServiceInstanceRequest {
   @IsNotEmpty()
   @IsString()
   @Type(() => String)
-  serviceId: string
+  service_id: string
 
   @IsNotEmpty()
   @IsString()
   @Type(() => String)
-  planId: string
+  plan_id: string
 
   @IsOptional()
   @Type(() => Context)
@@ -42,53 +42,5 @@ export class CreateServiceInstanceRequest {
     if (details) {
       Object.assign(this, details)
     }
-  }
-
-  public setServiceId(serviceId: string) {
-    this.serviceId = serviceId
-  }
-
-  public getServiceId(): string {
-    return this.serviceId
-  }
-
-  public setPlanId(planId: string) {
-    this.planId = planId
-  }
-
-  public getPlanId(): string {
-    return this.planId
-  }
-
-  public setContext(context: Context) {
-    this.context = context
-  }
-
-  public getContext(): Context {
-    return this.context
-  }
-
-  public setParameters(parameters: { [key: string]: any }) {
-    this.parameters = parameters
-  }
-
-  public getParameters(): { [key: string]: any } {
-    return this.parameters
-  }
-
-  public setInstanceId(instanceId: string) {
-    this.instanceId = instanceId
-  }
-
-  public getInstanceId(): string {
-    return this.instanceId
-  }
-
-  public setAsyncAccepted(asyncAccepted: boolean) {
-    this.asyncAccepted = asyncAccepted
-  }
-
-  public isAsyncAccepted(): boolean {
-    return this.asyncAccepted
   }
 }

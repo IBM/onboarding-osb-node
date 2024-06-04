@@ -1,18 +1,25 @@
 import { BrokerService } from '../broker.service'
 import fs from 'fs'
 import { promisify } from 'util'
+import { getRepository, FindOneOptions } from 'typeorm'
 import { Catalog } from '../../models/catalog.model'
 import { CreateServiceInstanceRequest } from '../../models/create-service-instance-request.model'
 import { ServiceDefinition } from '../../models/service-definition.model'
 import { UpdateStateRequest } from '../../models/update-state-request.model'
 import { ServiceInstanceStateResponse } from '../../models/response/service-instance-state-response.model'
 import Logger from '../../utils/logger'
-import { getRepository, FindOneOptions } from 'typeorm'
 import { ServiceInstance } from '../../db/entities/service-instance.entity'
+import BrokerUtil from '../../utils/brokerUtil'
+import { CatalogUtil } from '../../utils/catalogUtil'
+import { ServiceInstanceStatus } from '../../enums/service-instance-status'
 
 export class BrokerServiceImpl implements BrokerService {
   dashboardUrl: string = process.env.DASHBOARD_URL || 'http://localhost:8080'
   private catalog: Catalog
+  private static readonly INSTANCE_STATE = 'state'
+  private static readonly DISPLAY_NAME = 'displayName'
+  private static readonly PROVISION_STATUS_API = '/provision_status?type='
+  private static readonly INSTANCE_ID = '&instance_id='
 
   async importCatalog(file: Express.Multer.File): Promise<string> {
     const readFile = promisify(fs.readFile)
@@ -60,32 +67,72 @@ export class BrokerServiceImpl implements BrokerService {
       const createServiceRequest = new CreateServiceInstanceRequest(details)
       createServiceRequest.instanceId = instanceId
 
-      const plan = this.catalog
-        .getServiceDefinitions()[0]
-        .plans.find(p => p.id === createServiceRequest.planId)
-      if (!plan) {
-        Logger.error(
-          `Plan id:${createServiceRequest.planId} does not belong to this service: ${createServiceRequest.serviceId}`,
+      if (
+        createServiceRequest.context &&
+        createServiceRequest.context.platform === BrokerUtil.IBM_CLOUD
+      ) {
+        const plan = CatalogUtil.getPlan(
+          this.catalog,
+          createServiceRequest.service_id,
+          createServiceRequest.plan_id,
         )
-        throw new Error(`Invalid plan id: ${createServiceRequest.planId}`)
+
+        if (!plan) {
+          Logger.error(
+            `Plan id:${createServiceRequest.plan_id} does not belong to this service: ${createServiceRequest.service_id}`,
+          )
+          throw new Error(`Invalid plan id: ${createServiceRequest.plan_id}`)
+        }
+
+        const serviceInstance = this.getServiceInstanceEntity(
+          createServiceRequest,
+          iamId,
+          region,
+        )
+
+        await getRepository(ServiceInstance).save(serviceInstance)
+
+        Logger.info(
+          `Service Instance created: instanceId: ${instanceId} status: ${serviceInstance.status} planId: ${plan.id}`,
+        )
+
+        const displayName = this.getServiceMetaDataByAttribute(
+          BrokerServiceImpl.DISPLAY_NAME,
+        )
+        const responseUrl = `${BrokerUtil.DASHBOARD_URL}/provision_status?type=${displayName || this.catalog.getServiceDefinitions()[0].name}&instance_id=${instanceId}`
+
+        const response = {
+          dashboard_url: responseUrl,
+        }
+
+        return JSON.stringify(response)
+      } else {
+        Logger.error(
+          `Unidentified platform: ${createServiceRequest.context?.platform}`,
+        )
+        throw new Error(
+          `Invalid platform: ${createServiceRequest.context?.platform}`,
+        )
       }
-
-      const serviceInstance = this.getServiceInstanceEntity(
-        createServiceRequest,
-        iamId,
-        region,
-      )
-      await getRepository(ServiceInstance).save(serviceInstance)
-
-      const response = {
-        dashboard_url: `${this.dashboardUrl}/provision_status?type=${this.catalog.getServiceDefinitions()[0].name}&instance_id=${instanceId}`,
-      }
-
-      return JSON.stringify(response)
     } catch (error) {
       Logger.error('Error provisioning service instance:', error)
       throw new Error('Error provisioning service instance')
     }
+  }
+
+  private getServiceMetaDataByAttribute(attribute: string): string | null {
+    const service = this.catalog.services[0]
+
+    if (service && service.metadata) {
+      if (
+        service.metadata.hasOwnProperty(attribute) &&
+        service.metadata[attribute]
+      ) {
+        return service.metadata[attribute].toString()
+      }
+    }
+
+    return null
   }
 
   async deprovision(
@@ -245,13 +292,13 @@ export class BrokerServiceImpl implements BrokerService {
     const instance = new ServiceInstance()
     instance.instanceId = request.instanceId
     instance.name = request.context?.name
-    instance.serviceId = request.serviceId
-    instance.planId = request.planId
+    instance.serviceId = request.service_id
+    instance.planId = request.plan_id
     instance.iamId = iamId
     instance.region = region
     instance.context = JSON.stringify(request.context)
     instance.parameters = JSON.stringify(request.parameters)
-    instance.status = 'ACTIVE'
+    instance.status = ServiceInstanceStatus.ACTIVE
     instance.enabled = true
     instance.createDate = new Date()
     instance.updateDate = new Date()
