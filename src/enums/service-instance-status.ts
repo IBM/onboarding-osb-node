@@ -1,4 +1,4 @@
-enum ServiceInstanceStatus {
+export enum ServiceInstanceStatus {
   ACTIVE = 'ACTIVE',
   FAILED = 'FAILED',
   PROCESSING = 'PROCESSING',
