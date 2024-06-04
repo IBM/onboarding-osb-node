@@ -43,7 +43,19 @@ export class BrokerRoutes {
      */
     router.get('/v2/catalog', controller.getCatalog)
 
+    /**
+     * PUT /v2/service_instances/:instanceId
+     * Create service instance.
+     * @param {import('express').Request} req - HTTP request
+     * @param {import('express').Response} res - HTTP response
+     * @param {string} req.params.instanceId - Instance ID
+     * @param {boolean} [req.query.accepts_incomplete] - Accepts incomplete
+     * @param {object} req.body - Input JSON
+     * @returns {Promise<void>}
+     * @throws {Error} In case of error
+     */
     router.put('/v2/service_instances/:instanceId', controller.provision)
+
     router.put(
       '/bluemix_v1/service_instances/:instanceId',
       controller.updateServiceInstance,

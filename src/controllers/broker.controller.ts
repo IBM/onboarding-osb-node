@@ -1,6 +1,7 @@
 import { Request, Response } from 'express'
 import { BrokerService } from '../services/broker.service'
 import Logger from '../utils/logger'
+import BrokerUtil from '../utils/broker'
 
 export class BrokerController {
   constructor(private brokerService: BrokerService) {}
@@ -34,12 +35,29 @@ export class BrokerController {
   public provision = async (req: Request, res: Response): Promise<void> => {
     try {
       const instanceId = req.params.instanceId
+      const acceptsIncomplete = req.query.accepts_incomplete === 'true'
+
+      Logger.info(
+        `Create Service Instance request received: PUT /v2/service_instances/${instanceId}  ?accepts_incomplete=${acceptsIncomplete}  request body: ${JSON.stringify(req.body)}`,
+      )
+
+      const iamId = BrokerUtil.getIamId(req)
+      const bluemixRegion = BrokerUtil.getHeaderValue(
+        req,
+        BrokerUtil.BLUEMIX_REGION_HEADER,
+      )
+
       const result = await this.brokerService.provision(
         instanceId,
         req.body,
-        req.header('x-broker-api-originating-identity'),
-        req.header('x-bluemix-region'),
+        iamId,
+        bluemixRegion,
       )
+
+      Logger.info(
+        `Create Service Instance Response status: 201, body: ${JSON.stringify(result)}`,
+      )
+
       res.status(201).json(result)
     } catch (error) {
       Logger.error('Error provisioning service instance:', error)
