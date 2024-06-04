@@ -11,7 +11,7 @@ import { getRepository, FindOneOptions } from 'typeorm'
 import { ServiceInstance } from '../../db/entities/service-instance.entity'
 
 export class BrokerServiceImpl implements BrokerService {
-  dashboardUrl: string = process.env.DASHBOARD_URL || 'http://example.com'
+  dashboardUrl: string = process.env.DASHBOARD_URL || 'http://localhost:8080'
   private catalog: Catalog
 
   async importCatalog(file: Express.Multer.File): Promise<string> {
