@@ -46,7 +46,6 @@ export class BrokerController {
         req,
         BrokerUtil.BLUEMIX_REGION_HEADER,
       )
-
       const result = await this.brokerService.provision(
         instanceId,
         req.body,
@@ -133,12 +132,25 @@ export class BrokerController {
   public deprovision = async (req: Request, res: Response): Promise<void> => {
     try {
       const instanceId = req.params.instanceId
+      const acceptsIncomplete = req.query.accepts_incomplete === 'true'
+      const planId = req.query.plan_id as string
+      const serviceId = req.query.service_id as string
+
+      Logger.info(
+        `Deprovision Service Instance request received: DELETE /v2/service_instances/${instanceId}?accepts_incomplete=${acceptsIncomplete}&plan_id=${planId}&service_id=${serviceId}`,
+      )
+
       const result = await this.brokerService.deprovision(
         instanceId,
-        req.query.plan_id as string,
-        req.query.service_id as string,
-        req.header('x-broker-api-originating-identity'),
+        planId,
+        serviceId,
+        BrokerUtil.getIamId(req),
       )
+
+      Logger.info(
+        `Deprovision Service Instance Response status: 200, body: ${result}`,
+      )
+
       res.status(200).json(result)
     } catch (error) {
       Logger.error('Error deprovisioning service instance:', error)

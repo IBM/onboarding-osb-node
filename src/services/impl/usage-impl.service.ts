@@ -48,7 +48,7 @@ export class UsageServiceImpl implements UsageService {
           'Content-Type': 'application/json',
         },
       })
-      console.log('Usage Metering response:', response.data)
+
       return response
     } catch (error) {
       const axiosError = error as AxiosError

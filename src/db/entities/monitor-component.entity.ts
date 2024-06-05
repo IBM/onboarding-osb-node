@@ -3,15 +3,12 @@ import { BaseEntity } from './base.entity'
 
 @Entity({ name: 'monitor_component' })
 export class MonitorComponent extends BaseEntity {
-  @Column()
+  @Column({ nullable: false })
   name: string
 
-  @Column()
+  @Column({ nullable: true })
   url: string
 
-  @Column()
+  @Column({ nullable: true })
   auth: string
-
-  @Column()
-  version: number
 }

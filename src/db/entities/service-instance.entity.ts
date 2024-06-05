@@ -1,41 +1,35 @@
-import { Entity, Column } from 'typeorm'
+import { Entity, Column, PrimaryColumn } from 'typeorm'
 import { BaseEntity } from './base.entity'
 
 @Entity({ name: 'service_instance' })
 export class ServiceInstance extends BaseEntity {
-  @Column({ name: 'instance_id' })
+  @PrimaryColumn({ name: 'instance_id' })
   instanceId: string
 
-  @Column()
+  @Column({ nullable: true })
   name: string
 
-  @Column({ name: 'iam_id' })
+  @Column({ name: 'iam_id', nullable: true })
   iamId: string
 
-  @Column({ name: 'plan_id' })
+  @Column({ name: 'plan_id', nullable: true })
   planId: string
 
-  @Column({ name: 'service_id' })
+  @Column({ name: 'service_id', nullable: true })
   serviceId: string
 
-  @Column()
+  @Column({ nullable: true })
   status: string
 
-  @Column()
+  @Column({ default: false })
+  enabled: boolean
+
+  @Column({ nullable: true })
   region: string
 
-  @Column({ length: 1024 })
+  @Column({ length: 1024, nullable: true })
   context: string
 
-  @Column()
+  @Column({ nullable: true })
   parameters: string
-
-  @Column({ name: 'create_date', type: 'timestamp' })
-  createDate: Date
-
-  @Column({ name: 'update_date', type: 'timestamp' })
-  updateDate: Date
-
-  @Column()
-  enabled: boolean
 }

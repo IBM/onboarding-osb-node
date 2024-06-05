@@ -2,6 +2,7 @@ import 'reflect-metadata'
 import dotenv from 'dotenv'
 import { DataSource } from 'typeorm'
 import { DataSourceOptions } from 'typeorm'
+import Logger from '../utils/logger'
 
 dotenv.config()
 
@@ -22,7 +23,7 @@ const connectionOptions: DataSourceOptions = {
   subscribers: [__dirname + '/subscribers/**/*.ts'],
 }
 
-console.log('DB Configuration:', connectionOptions)
+Logger.info('DB Configuration:', connectionOptions)
 
 const AppDataSource = new DataSource(connectionOptions)
 

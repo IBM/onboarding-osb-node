@@ -69,6 +69,14 @@ export class BrokerRoutes {
       '/v2/service_instances/:instanceId/service_bindings/:bindingId',
       controller.unbind,
     )
+
+    /**
+     * Deprovision/Delete given service instance.
+     * @param {string} instanceId - The instance id
+     * @param {string} plan_id - The plan id
+     * @param {string} service_id - The service id
+     * @param {boolean} accepts_incomplete - Accepts incomplete
+     */
     router.delete('/v2/service_instances/:instanceId', controller.deprovision)
     router.patch('/v2/service_instances/:instanceId', controller.update)
     router.get(

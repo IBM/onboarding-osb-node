@@ -1,29 +1,23 @@
-import { Column, Entity } from 'typeorm'
+import { Entity, Column } from 'typeorm'
 import { BaseEntity } from './base.entity'
 
 @Entity({ name: 'workflow' })
 export class Workflow extends BaseEntity {
-  @Column({ name: 'iam_id' })
+  @Column({ name: 'iam_id', nullable: true })
   iamId: string
 
-  @Column({ name: 'instance_id' })
+  @Column({ name: 'instance_id', nullable: true })
   instanceId: string
 
-  @Column()
+  @Column({ nullable: true })
   operation: string
 
-  @Column()
+  @Column({ nullable: true })
   status: string
 
-  @Column()
+  @Column({ length: 1024, nullable: true })
   request: string
 
-  @Column()
+  @Column({ length: 1024, nullable: true })
   response: string
-
-  @Column({ name: 'create_date', type: 'timestamp' })
-  createDate: Date
-
-  @Column({ name: 'update_date', type: 'timestamp' })
-  updateDate: Date
 }
