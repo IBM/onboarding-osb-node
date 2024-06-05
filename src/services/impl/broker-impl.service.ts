@@ -65,10 +65,9 @@ export class BrokerServiceImpl implements BrokerService {
     region: string,
   ): Promise<string> {
     try {
-      console.log("iamId", iamId, region)
       const createServiceRequest = new CreateServiceInstanceRequest(details)
       createServiceRequest.instanceId = instanceId
-      console.log("plan", createServiceRequest)
+
       if (
         createServiceRequest.context &&
         createServiceRequest.context.platform === BrokerUtil.IBM_CLOUD
@@ -85,7 +84,7 @@ export class BrokerServiceImpl implements BrokerService {
           )
           throw new Error(`Invalid plan id: ${createServiceRequest.plan_id}`)
         }
-        console.log("plan", plan)
+
         const serviceInstance = this.getServiceInstanceEntity(
           createServiceRequest,
           iamId,
@@ -146,7 +145,11 @@ export class BrokerServiceImpl implements BrokerService {
     iamId: string,
   ): Promise<string> {
     try {
-      await getRepository(ServiceInstance).delete({ instanceId })
+      const serviceInstanceRepository =
+        AppDataSource.getRepository(ServiceInstance)
+
+      await serviceInstanceRepository.delete({ instanceId })
+
       const response = { description: 'Deprovisioned' }
       return JSON.stringify(response)
     } catch (error) {
@@ -293,8 +296,6 @@ export class BrokerServiceImpl implements BrokerService {
     iamId: string,
     region: string,
   ): ServiceInstance {
-    console.log("request.context", request.context)
-    console.log(request.parameters)
     const instance = new ServiceInstance()
     instance.instanceId = request.instanceId
     instance.name = request.context?.name
@@ -302,8 +303,8 @@ export class BrokerServiceImpl implements BrokerService {
     instance.planId = request.plan_id
     instance.iamId = iamId
     instance.region = region
-    // instance.context = JSON.stringify(request.context)
-    // instance.parameters = JSON.stringify(request.parameters)
+    instance.context = JSON.stringify(request.context)
+    instance.parameters = JSON.stringify(request.parameters)
     instance.status = ServiceInstanceStatus.ACTIVE
     instance.enabled = true
     instance.createDate = new Date()

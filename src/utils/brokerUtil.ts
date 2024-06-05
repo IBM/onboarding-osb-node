@@ -20,19 +20,24 @@ class BrokerUtil {
   static TEST_INSTANCE_ID = 'crnTest111'
 
   static getIamId(req: Request): string | null {
-    const originatingIdentity = req.header(this.ORIGINATING_IDENTITY_HEADER)
+    try {
+      const originatingIdentity = req.header(this.ORIGINATING_IDENTITY_HEADER)
 
-    if (originatingIdentity) {
-      const strings = originatingIdentity.split(' ')
-      const decoded = Base64.decode(strings[1])
-      const iam: IAMIdentity = JSON.parse(decoded)
+      if (originatingIdentity) {
+        const strings = originatingIdentity.split(' ')
+        const decoded = Base64.decode(strings[1])
+        const iam: IAMIdentity = JSON.parse(decoded)
 
-      if (iam && iam.iam_id) {
-        return iam.iam_id
+        if (iam && iam.iam_id) {
+          return iam.iam_id
+        }
       }
-    }
 
-    return null
+      return null
+    } catch (error) {
+      console.error('Error parsing IAM identity:', error)
+      return null
+    }
   }
 
   static getHeaderValue(req: Request, headerName: string): string | undefined {

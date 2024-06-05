@@ -2,12 +2,12 @@ import { Plan } from '../models/plan.model'
 import { Catalog } from '../models/catalog.model'
 
 export class CatalogUtil {
-  public static readonly COSTS = 'costs'
-  public static readonly METERING_UNIT = 'meteringUnit'
-  public static readonly CREDIT_PLAN = 'virtualcoursecredit-subscription-plan'
-  public static readonly BASE_PLAN = 'computinglab-base-plan'
-  public static readonly PREMIUM_PLAN = 'computinglab-premium-plan'
-  public static readonly LITE_PLAN = 'lite'
+  static COSTS = 'costs'
+  static METERING_UNIT = 'meteringUnit'
+  static CREDIT_PLAN = 'virtualcoursecredit-subscription-plan'
+  static BASE_PLAN = 'computinglab-base-plan'
+  static PREMIUM_PLAN = 'computinglab-premium-plan'
+  static LITE_PLAN = 'lite'
 
   public static getPlan(
     catalog: Catalog,
