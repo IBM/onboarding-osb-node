@@ -1,0 +1,13 @@
+# Ensure consistent Git behavior
+* text=auto
+
+# Binary files
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.ico binary
+
+# Avoid diffing large files
+dist/* -diff
+build/* -diff

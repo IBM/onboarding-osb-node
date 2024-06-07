@@ -1,0 +1,36 @@
+# Snyk policy file
+version: v1.14.0
+
+ignore:
+  # Example ignore rule: Ignore a specific vulnerability (by its ID) in a specific dependency
+  # Add ignores only if you have a reason and a plan to address them before the expiration date
+  # "npm:<package>:<vulnerability_id>":
+  #   - <package>:
+  #       reason: "Your reason here"
+  #       expires: 2024-12-31T23:59:59Z  # Set a reminder to review this ignore rule
+
+patch:
+  # Define patches if you have applied any
+  # You can apply patches using `snyk wizard` or `snyk protect` before adding them here
+
+monitor:
+  # Monitor the default package.json and yarn.lock files
+  - package.json
+  - yarn.lock
+  # Include additional paths if necessary, for example:
+  # - backend/package.json
+  # - frontend/package.json
+
+test:
+  # Test the default package.json and yarn.lock files
+  - package.json
+  - yarn.lock
+  # Include additional paths if necessary, for example:
+  # - backend/package.json
+  # - frontend/package.json
+
+severityThreshold: high
+# Example of setting custom severity levels for specific vulnerabilities
+# You can specify custom severities based on your threat model
+# severity:
+#   "npm:<package>:<vulnerability_id>": high

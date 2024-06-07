@@ -4,7 +4,7 @@
     "module": "commonjs",
     "lib": ["es2022"],
     "moduleResolution": "node",
-    "outDir": "./build",
+    "outDir": "./dist",
     "rootDir": "./src",
     "baseUrl": "./src",
     "paths": {
