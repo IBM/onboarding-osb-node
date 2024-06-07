@@ -22,6 +22,14 @@ app.use(encodedSlashes)
 // Use logger middleware
 app.use(loggerMiddleware)
 
+app.get('/liveness', (req, res) => {
+  res.sendStatus(200)
+})
+
+app.get('/readiness', (req, res) => {
+  res.sendStatus(200)
+})
+
 const startServer = async () => {
   try {
     await AppDataSource.initialize()
