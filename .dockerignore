@@ -1,6 +1,8 @@
-src/types
 node_modules
 dist
 build
 logs
-*.log
+.git
+.vscode
+.DS_Store
+.env

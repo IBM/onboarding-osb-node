@@ -11,11 +11,13 @@
   "author": "Shohel Rana <cse_shohel@yahoo.com>",
   "license": "MIT",
   "scripts": {
+    "clean": "rm -rf dist",
     "watch": "tsc -w",
-    "dev": "nodemon src/app.ts",
-    "start": "tsc && node dist/app.js",
-    "build": "tsc",
+    "dev": "nodemon dist/app.js",
+    "start": "yarn clean && tsc && node dist/app.js",
+    "build": "yarn clean && tsc",
     "test": "jest",
+    "test:ci": "jest --passWithNoTests",
     "start:dev": "concurrently \"yarn watch\" \"yarn dev\"",
     "typeorm": "ts-node ./node_modules/typeorm/cli.js",
     "migrate:generate": "yarn typeorm migration:generate -d ./src/db/data-source.ts -n",
@@ -24,10 +26,11 @@
     "lint-fix": "eslint . --fix",
     "format": "prettier --write \"**/*.{ts,tsx,json,css,md}\"",
     "check-types": "tsc --noEmit",
-    "prettify": "yarn format"
+    "prettify": "yarn format",
+    "prepare": "husky install"
   },
   "engines": {
-    "node": ">=18.0.0"
+    "node": ">=20.0.0"
   },
   "dependencies": {
     "@types/cors": "^2.8.15",
@@ -44,35 +47,42 @@
     "multer": "^1.4.5-lts.1",
     "pg": "^8.11.0",
     "reflect-metadata": "^0.1.13",
+    "tsconfig-paths": "4.2.0",
     "typeorm": "0.3.17",
     "winston": "^3.13.0"
   },
   "devDependencies": {
+    "@commitlint/cli": "^12.1.4",
+    "@commitlint/config-conventional": "^12.1.4",
     "@types/axios": "^0.14.0",
     "@types/express": "^4.17.21",
     "@types/jest": "^27.0.3",
     "@types/morgan": "^1.9.9",
     "@types/multer": "^1.4.11",
     "@types/winston": "^2.4.4",
-    "@typescript-eslint/eslint-plugin": "^7.7.1",
-    "@typescript-eslint/parser": "^7.7.1",
+    "@typescript-eslint/eslint-plugin": "7.12.0",
+    "@typescript-eslint/parser": "7.12.0",
     "concurrently": "^7.0.0",
-    "eslint": "^9.1.1",
-    "eslint-config-prettier": "^9.0.0",
-    "eslint-plugin-prettier": "^5.1.3",
+    "eslint": "9.4.0",
+    "eslint-config-prettier": "9.1.0",
+    "eslint-plugin-prettier": "5.1.3",
+    "husky": "^8.0.0",
     "jest": "^27.4.5",
     "lint-staged": "^13.2.2",
     "morgan": "^1.10.0",
     "nodemon": "^3.1.0",
-    "prettier": "^3.2.5",
+    "prettier": "3.3.1",
     "ts-jest": "^27.1.1",
     "ts-node": "^10.9.2",
     "typescript": "^5.4.5"
   },
   "lint-staged": {
-    "*.ts": [
-      "yarn lint",
-      "yarn prettify"
+    "*.{js,jsx,ts,tsx}": [
+      "eslint --fix",
+      "prettier --write"
+    ],
+    "*.{json,md}": [
+      "prettier --write"
     ]
   }
 }

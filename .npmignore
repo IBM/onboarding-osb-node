@@ -1,0 +1,19 @@
+# Ignore these files and directories in the npm package
+src
+Dockerfile
+docker-compose.yml
+docker-compose.prod.yml
+**/*.ts
+**/*.map
+!.env.example
+.git
+.idea
+.vscode
+.DS_Store
+Thumbs.db
+node_modules
+dist
+build
+logs
+*.log
+uploads

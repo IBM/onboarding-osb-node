@@ -3,6 +3,7 @@ node_modules/
 
 # Directory for TypeScript output
 dist/
+build/
 
 # Editor directories and files
 .vscode/
@@ -28,5 +29,4 @@ logs/
 Thumbs.db
 
 # Build files
-build/
 uploads/
