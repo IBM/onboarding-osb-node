@@ -6,7 +6,7 @@ import Logger from '../utils/logger'
 
 dotenv.config()
 
-const { DB_HOST, DB_PORT, DB_USER, DB_USER_PWD, DB_NAME, NODE_ENV } =
+const { DB_CERT, DB_HOST, DB_PORT, DB_USER, DB_USER_PWD, DB_NAME, NODE_ENV } =
   process.env
 
 const connectionOptions: DataSourceOptions = {
@@ -21,6 +21,12 @@ const connectionOptions: DataSourceOptions = {
   entities: [__dirname + '/entities/**/*.ts'],
   migrations: [__dirname + '/migrations/**/*.ts'],
   subscribers: [__dirname + '/subscribers/**/*.ts'],
+  ssl: DB_CERT
+    ? {
+        rejectUnauthorized: false,
+        ca: DB_CERT,
+      }
+    : undefined,
 }
 
 Logger.info('DB Configuration:', connectionOptions)
