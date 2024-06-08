@@ -10,14 +10,18 @@ export class BrokerController {
     try {
       const file = req.file
       if (!file) {
-        res.status(400).send('No file provided')
+        res.status(400).send('No file provided. Please upload a catalog file.')
         return
       }
       const result = await this.brokerService.importCatalog(file)
       res.status(200).send(result)
     } catch (error) {
       Logger.error('Error importing catalog:', error)
-      res.status(500).send('Server Error')
+      res
+        .status(500)
+        .send(
+          'Internal Server Error while importing catalog. Please try again later.',
+        )
     }
   }
 
@@ -28,7 +32,11 @@ export class BrokerController {
       res.json(catalog)
     } catch (error) {
       Logger.error('Error retrieving catalog:', error)
-      res.status(500).send('Server Error')
+      res
+        .status(500)
+        .send(
+          'Internal Server Error while retrieving catalog. Please try again later.',
+        )
     }
   }
 
@@ -38,7 +46,7 @@ export class BrokerController {
       const acceptsIncomplete = req.query.accepts_incomplete === 'true'
 
       Logger.info(
-        `Create Service Instance request received: PUT /v2/service_instances/${instanceId}  ?accepts_incomplete=${acceptsIncomplete}  request body: ${JSON.stringify(req.body)}`,
+        `Create Service Instance request received: PUT /v2/service_instances/${instanceId}?accepts_incomplete=${acceptsIncomplete} request body: ${JSON.stringify(req.body)}`,
       )
 
       const iamId = BrokerUtil.getIamId(req)
@@ -60,7 +68,11 @@ export class BrokerController {
       res.status(201).json(result)
     } catch (error) {
       Logger.error('Error provisioning service instance:', error)
-      res.status(500).send('Server Error')
+      res
+        .status(500)
+        .send(
+          'Internal Server Error while provisioning service instance. Please try again later.',
+        )
     }
   }
 
@@ -78,7 +90,11 @@ export class BrokerController {
       res.status(200).json(result)
     } catch (error) {
       Logger.error('Error updating service instance:', error)
-      res.status(500).send('Server Error')
+      res
+        .status(500)
+        .send(
+          'Internal Server Error while updating service instance. Please try again later.',
+        )
     }
   }
 
@@ -92,7 +108,11 @@ export class BrokerController {
       res.json(state)
     } catch (error) {
       Logger.error('Error getting state:', error)
-      res.status(500).send('Server Error')
+      res
+        .status(500)
+        .send(
+          'Internal Server Error while retrieving state. Please try again later.',
+        )
     }
   }
 
@@ -108,7 +128,11 @@ export class BrokerController {
       res.status(201).json(result)
     } catch (error) {
       Logger.error('Error binding service:', error)
-      res.status(500).send('Server Error')
+      res
+        .status(500)
+        .send(
+          'Internal Server Error while binding service. Please try again later.',
+        )
     }
   }
 
@@ -125,7 +149,11 @@ export class BrokerController {
       res.status(200).json(result)
     } catch (error) {
       Logger.error('Error unbinding service:', error)
-      res.status(500).send('Server Error')
+      res
+        .status(500)
+        .send(
+          'Internal Server Error while unbinding service. Please try again later.',
+        )
     }
   }
 
@@ -154,7 +182,11 @@ export class BrokerController {
       res.status(200).json(result)
     } catch (error) {
       Logger.error('Error deprovisioning service instance:', error)
-      res.status(500).send('Server Error')
+      res
+        .status(500)
+        .send(
+          'Internal Server Error while deprovisioning service instance. Please try again later.',
+        )
     }
   }
 
@@ -170,7 +202,11 @@ export class BrokerController {
       res.status(200).json(result)
     } catch (error) {
       Logger.error('Error updating service:', error)
-      res.status(500).send('Server Error')
+      res
+        .status(500)
+        .send(
+          'Internal Server Error while updating service. Please try again later.',
+        )
     }
   }
 
@@ -187,7 +223,11 @@ export class BrokerController {
       res.status(200).json(result)
     } catch (error) {
       Logger.error('Error fetching last operation:', error)
-      res.status(500).send('Server Error')
+      res
+        .status(500)
+        .send(
+          'Internal Server Error while fetching last operation. Please try again later.',
+        )
     }
   }
 }
