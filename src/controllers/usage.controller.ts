@@ -1,5 +1,6 @@
 import { NextFunction, Request, Response } from 'express'
 import { UsageService } from '../services/usage.service'
+import Logger from '../utils/logger'
 
 export class UsageController {
   constructor(private readonly usageService: UsageService) {}
@@ -17,10 +18,14 @@ export class UsageController {
         resourceId,
         meteringPayload,
       )
-      res.json(response)
+      res.status(200).json(response)
     } catch (error) {
-      console.error('Error sending usage data:', error)
-      res.status(500).send('Error sending usage data')
+      Logger.error('Error sending usage data:', error)
+      res
+        .status(500)
+        .send(
+          'Internal Server Error while sending usage data. Please try again later.',
+        )
     }
   }
 }

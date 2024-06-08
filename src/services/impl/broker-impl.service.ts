@@ -29,6 +29,12 @@ export class BrokerServiceImpl implements BrokerService {
       const data = await readFile(file.path, { encoding: 'utf8' })
       const catalogJson = JSON.parse(data)
 
+      if (!catalogJson.services || !Array.isArray(catalogJson.services)) {
+        throw new Error(
+          'Invalid catalog format: "services" array is missing or not an array',
+        )
+      }
+
       const serviceDefinitions = catalogJson.services.map(
         (service: any) =>
           new ServiceDefinition(
