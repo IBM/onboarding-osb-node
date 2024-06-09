@@ -1,22 +1,21 @@
 {
   "compilerOptions": {
-    "target": "ES2022",
+    "target": "esnext",
     "module": "commonjs",
-    "lib": ["ES2022"],
-    "moduleResolution": "node",
     "outDir": "./dist",
-    "rootDir": "./src",
-    "baseUrl": "./src",
-    "paths": {
-      "*": ["../node_modules/*", "types/*"]
-    },
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
     "sourceMap": true,
     "forceConsistentCasingInFileNames": true,
     "esModuleInterop": true,
-    "skipLibCheck": true
+    "noImplicitAny": true,
+    // "strict": true,
+    "skipLibCheck": true,
+    // "strictPropertyInitialization": true,
+    // "noUnusedLocals": true,
+    // "noUnusedParameters": true,
+    "typeRoots": ["./node_modules/@types", "./src/types"]
   },
-  "include": ["src/**/*.ts"],
-  "exclude": ["../node_modules", "**/*.spec.ts"]
+  "include": ["./*.js", "src/**/*.ts", "test/**/*.ts"],
+  "exclude": ["node_modules", "**/*.spec.ts"]
 }

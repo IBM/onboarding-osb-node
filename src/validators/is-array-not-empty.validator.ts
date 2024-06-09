@@ -12,7 +12,7 @@ export function IsArrayNotEmpty(validationOptions?: ValidationOptions) {
       propertyName: propertyName,
       options: validationOptions,
       validator: {
-        validate(value: any[], args: ValidationArguments) {
+        validate(value: any[], _args: ValidationArguments) {
           return Array.isArray(value) && value.length > 0
         },
         defaultMessage(args: ValidationArguments) {
