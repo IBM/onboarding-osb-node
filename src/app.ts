@@ -1,5 +1,5 @@
 import 'reflect-metadata'
-import express from 'express'
+import express, { Request, Response } from 'express'
 import dotenv from 'dotenv'
 import Logger from './utils/logger'
 import { errorHandler } from './middlewares/error-middleware'
@@ -22,11 +22,7 @@ app.use(encodedSlashes)
 // Use logger middleware
 app.use(loggerMiddleware)
 
-app.get('/liveness', (req, res) => {
-  res.sendStatus(200)
-})
-
-app.get('/readiness', (req, res) => {
+app.get('/liveness', (_req: Request, res: Response) => {
   res.sendStatus(200)
 })
 
@@ -64,3 +60,5 @@ process.on('unhandledRejection', (reason, promise) => {
   Logger.error('Unhandled Rejection at:', promise, 'reason:', reason)
   process.exit(1)
 })
+
+export default app

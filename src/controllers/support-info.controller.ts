@@ -6,9 +6,9 @@ export class SupportInfoController {
   constructor(private readonly supportInfoService: SupportInfoService) {}
 
   public getInstances = async (
-    req: Request,
+    _req: Request,
     res: Response,
-    next: NextFunction,
+    _next: NextFunction,
   ): Promise<void> => {
     try {
       const instances = await this.supportInfoService.getServiceInstances()
@@ -24,9 +24,9 @@ export class SupportInfoController {
   }
 
   public getMetadata = async (
-    req: Request,
+    _req: Request,
     res: Response,
-    next: NextFunction,
+    _next: NextFunction,
   ): Promise<void> => {
     try {
       const metadata = await this.supportInfoService.getMetadata()

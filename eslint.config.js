@@ -1,8 +1,8 @@
-import eslintPluginPrettier from 'eslint-plugin-prettier';
-import eslintPluginTypeScript from '@typescript-eslint/eslint-plugin';
-import parser from '@typescript-eslint/parser';
+const eslintPluginPrettier = require('eslint-plugin-prettier');
+const eslintPluginTypeScript = require('@typescript-eslint/eslint-plugin');
+const parser = require('@typescript-eslint/parser');
 
-export default [
+module.exports = [
   {
     files: ['*.ts', '*.tsx'],
     languageOptions: {
@@ -29,8 +29,5 @@ export default [
       '@typescript-eslint/no-explicit-any': 'warn',
       'prettier/prettier': 'error',
     },
-  },
-  {
-    ignores: ['node_modules/', 'dist/', 'build/', 'src/types/'],
-  },
+  }
 ];

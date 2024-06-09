@@ -8,7 +8,7 @@ export class UsageController {
   public sendUsageData = async (
     req: Request,
     res: Response,
-    next: NextFunction,
+    _next: NextFunction,
   ): Promise<void> => {
     const resourceId = req.params.resourceId
     const meteringPayload = req.body

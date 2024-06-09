@@ -25,7 +25,7 @@ export class BrokerController {
     }
   }
 
-  public getCatalog = async (req: Request, res: Response): Promise<void> => {
+  public getCatalog = async (_req: Request, res: Response): Promise<void> => {
     try {
       const catalog = await this.brokerService.getCatalog()
       Logger.info('Request completed: GET /v2/catalog')
@@ -42,18 +42,23 @@ export class BrokerController {
 
   public provision = async (req: Request, res: Response): Promise<void> => {
     try {
-      const instanceId = req.params.instanceId
+      const instanceId = req.params.instanceId ?? ''
       const acceptsIncomplete = req.query.accepts_incomplete === 'true'
 
       Logger.info(
         `Create Service Instance request received: PUT /v2/service_instances/${instanceId}?accepts_incomplete=${acceptsIncomplete} request body: ${JSON.stringify(req.body)}`,
       )
 
-      const iamId = BrokerUtil.getIamId(req)
-      const bluemixRegion = BrokerUtil.getHeaderValue(
-        req,
-        BrokerUtil.BLUEMIX_REGION_HEADER,
-      )
+      const iamId = BrokerUtil.getIamId(req) ?? ''
+      const bluemixRegion =
+        BrokerUtil.getHeaderValue(req, BrokerUtil.BLUEMIX_REGION_HEADER) ?? ''
+
+      if (!instanceId || !iamId || !bluemixRegion) {
+        throw new Error(
+          'One or more required parameters are missing or invalid.',
+        )
+      }
+
       const result = await this.brokerService.provision(
         instanceId,
         req.body,
@@ -82,10 +87,13 @@ export class BrokerController {
   ): Promise<void> => {
     try {
       const instanceId = req.params.instanceId
+      const originatingIdentity =
+        req.header('x-broker-api-originating-identity') ?? ''
+
       const result = await this.brokerService.updateState(
         instanceId,
         req.body,
-        req.header('x-broker-api-originating-identity'),
+        originatingIdentity,
       )
       res.status(200).json(result)
     } catch (error) {
@@ -101,9 +109,12 @@ export class BrokerController {
   public getState = async (req: Request, res: Response): Promise<void> => {
     try {
       const instanceId = req.params.instanceId
+      const originatingIdentity =
+        req.header('x-broker-api-originating-identity') ?? ''
+
       const state = await this.brokerService.getState(
         instanceId,
-        req.header('x-broker-api-originating-identity'),
+        originatingIdentity,
       )
       res.json(state)
     } catch (error) {
@@ -172,7 +183,7 @@ export class BrokerController {
         instanceId,
         planId,
         serviceId,
-        BrokerUtil.getIamId(req),
+        BrokerUtil.getIamId(req) ?? '',
       )
 
       Logger.info(
@@ -193,11 +204,15 @@ export class BrokerController {
   public update = async (req: Request, res: Response): Promise<void> => {
     try {
       const instanceId = req.params.instanceId
+      const originatingIdentity =
+        req.header('x-broker-api-originating-identity') ?? ''
+      const bluemixRegion = req.header('x-bluemix-region') ?? ''
+
       const result = await this.brokerService.update(
         instanceId,
         req.body,
-        req.header('x-broker-api-originating-identity'),
-        req.header('x-bluemix-region'),
+        originatingIdentity,
+        bluemixRegion,
       )
       res.status(200).json(result)
     } catch (error) {
@@ -216,9 +231,12 @@ export class BrokerController {
   ): Promise<void> => {
     try {
       const instanceId = req.params.instanceId
+      const originatingIdentity =
+        req.header('x-broker-api-originating-identity') ?? ''
+
       const result = await this.brokerService.lastOperation(
         instanceId,
-        req.header('x-broker-api-originating-identity'),
+        originatingIdentity,
       )
       res.status(200).json(result)
     } catch (error) {
