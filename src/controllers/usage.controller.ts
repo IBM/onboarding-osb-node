@@ -8,7 +8,7 @@ export class UsageController {
   public sendUsageData = async (
     req: Request,
     res: Response,
-    _next: NextFunction,
+    next: NextFunction,
   ): Promise<void> => {
     const resourceId = req.params.resourceId
     const meteringPayload = req.body
@@ -19,6 +19,7 @@ export class UsageController {
         meteringPayload,
       )
       res.status(200).json(response)
+      console.log(next)
     } catch (error) {
       Logger.error('Error sending usage data:', error)
       res

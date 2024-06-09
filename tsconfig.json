@@ -16,6 +16,6 @@
     // "noUnusedParameters": true,
     "typeRoots": ["./node_modules/@types", "./src/types"]
   },
-  "include": ["./*.js", "src/**/*.ts", "test/**/*.ts"],
-  "exclude": ["node_modules", "**/*.spec.ts"]
+  "include": ["./*.js", "src/**/*.ts", "test/**/*.ts", ".eslintrc.js"],
+  "exclude": ["node_modules", "**/*.spec.ts", "src/logs", "src/tests"]
 }

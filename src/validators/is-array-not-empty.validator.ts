@@ -12,7 +12,8 @@ export function IsArrayNotEmpty(validationOptions?: ValidationOptions) {
       propertyName: propertyName,
       options: validationOptions,
       validator: {
-        validate(value: any[], _args: ValidationArguments) {
+        validate(value: any[], args: ValidationArguments) {
+          console.log('args', args)
           return Array.isArray(value) && value.length > 0
         },
         defaultMessage(args: ValidationArguments) {

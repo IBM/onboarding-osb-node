@@ -1,4 +1,4 @@
-import { IsNotEmpty, IsString, IsOptional } from 'class-validator'
+import { IsNotEmpty, IsString } from 'class-validator'
 import { Type } from 'class-transformer'
 
 export class Context {
