@@ -4,3 +4,7 @@ dist
 build
 logs
 *.log
+.cache
+package-lock.json
+public
+yarn.lock

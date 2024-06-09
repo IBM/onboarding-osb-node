@@ -1,4 +1,21 @@
+# Ignore node modules
 node_modules/
+
+# Ignore build and distribution directories
 dist/
 build/
-src/types/
+
+# Ignore Next.js specific directories
+.next
+.cache
+
+# Ignore package lock files
+package-lock.json
+yarn.lock
+
+# Ignore public directory
+public/
+
+# Ignore Next.js configuration files
+next-env.d.ts
+next.config.ts
