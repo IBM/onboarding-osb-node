@@ -2,6 +2,7 @@ import 'reflect-metadata'
 import dotenv from 'dotenv'
 import { DataSource } from 'typeorm'
 import { DataSourceOptions } from 'typeorm'
+import path from 'path'
 import Logger from '../utils/logger'
 
 dotenv.config()
@@ -18,9 +19,9 @@ const connectionOptions: DataSourceOptions = {
   database: DB_NAME,
   synchronize: NODE_ENV === 'development',
   logging: NODE_ENV === 'development',
-  entities: [__dirname + '/entities/**/*.ts'],
-  migrations: [__dirname + '/migrations/**/*.ts'],
-  subscribers: [__dirname + '/subscribers/**/*.ts'],
+  entities: [path.join(process.cwd(), '/src/db/entities/**/*.ts')],
+  migrations: [path.join(process.cwd(), '/src/db/migrations/**/*.ts')],
+  subscribers: [path.join(process.cwd(), '/src/db/subscribers/**/*.ts')],
   ssl: DB_CERT
     ? {
         rejectUnauthorized: false,
@@ -30,7 +31,11 @@ const connectionOptions: DataSourceOptions = {
 }
 
 Logger.info('DB Configuration:', connectionOptions)
-
+console.log('__dirname::::', __dirname + '/entities/**/*.ts')
+console.log(
+  'cess.cwd():::',
+  path.join(process.cwd(), '/src/db/entities/**/*.ts'),
+)
 const AppDataSource = new DataSource(connectionOptions)
 
 export default AppDataSource
