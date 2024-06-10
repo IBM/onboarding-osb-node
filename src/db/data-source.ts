@@ -32,10 +32,10 @@ const connectionOptions: DataSourceOptions = {
 
 Logger.info('DB Configuration:', connectionOptions)
 const path1 = path.join(__dirname, 'entities/**/*.ts')
-Logger.info('__dirname::::', path1)
+Logger.info(`dirname: ${path1}`)
 
 const path2 = path.join(process.cwd(), '/src/db/entities/**/*.ts')
-Logger.info('process.cwd()::::', path2)
+Logger.info(`process: ${path2}`)
 const AppDataSource = new DataSource(connectionOptions)
 
 export default AppDataSource
