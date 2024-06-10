@@ -31,8 +31,8 @@ const connectionOptions: DataSourceOptions = {
 }
 
 Logger.info('DB Configuration:', connectionOptions)
-console.log('__dirname::::', __dirname + '/entities/**/*.ts')
-console.log(
+Logger.info('__dirname::::', __dirname + '/entities/**/*.ts')
+Logger.info(
   'cess.cwd():::',
   path.join(process.cwd(), '/src/db/entities/**/*.ts'),
 )
