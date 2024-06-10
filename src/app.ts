@@ -5,7 +5,7 @@ import Logger from './utils/logger'
 import { errorHandler } from './middlewares/error-middleware'
 import AppDataSource from './db/data-source'
 import { AppRoutes } from './routes'
-import { encodedSlashes } from './middlewares/encoded-slashes-middleware'
+// import { encodedSlashes } from './middlewares/encoded-slashes-middleware'
 import { loggerMiddleware } from './middlewares/logger-middleware'
 import { notFoundMiddleware } from './middlewares/not-found-middleware'
 
@@ -17,7 +17,7 @@ const PORT = process.env.PORT || 3000
 app.use(express.json())
 
 // Use encoded slashes middleware
-app.use(encodedSlashes)
+// app.use(encodedSlashes)
 
 // Use logger middleware
 app.use(loggerMiddleware)
