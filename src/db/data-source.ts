@@ -19,9 +19,9 @@ const connectionOptions: DataSourceOptions = {
   database: DB_NAME,
   synchronize: NODE_ENV === 'development',
   logging: NODE_ENV === 'development',
-  entities: [path.join(process.cwd(), '/src/db/entities/**/*.ts')],
-  migrations: [path.join(process.cwd(), '/src/db/migrations/**/*.ts')],
-  subscribers: [path.join(process.cwd(), '/src/db/subscribers/**/*.ts')],
+  entities: [path.join(__dirname, 'entities/**/*.ts')],
+  migrations: [path.join(__dirname, 'migrations/**/*.ts')],
+  subscribers: [path.join(__dirname, 'subscribers/**/*.ts')],
   ssl: DB_CERT
     ? {
         rejectUnauthorized: false,
