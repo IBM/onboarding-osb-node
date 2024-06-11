@@ -112,10 +112,10 @@ export class BrokerServiceImpl implements BrokerService {
         const displayName = this.getServiceMetaDataByAttribute(
           BrokerServiceImpl.DISPLAY_NAME,
         )
-        const responseUrl = `${BrokerUtil.DASHBOARD_URL}/provision_status?type=${displayName || this.catalog.getServiceDefinitions()[0].name}&instance_id=${instanceId}`
+        const responseUrl = `${process.env.DASHBOARD_URL}${BrokerServiceImpl.PROVISION_STATUS_API}${displayName || this.catalog.getServiceDefinitions()[0].name}${BrokerServiceImpl.INSTANCE_ID}${instanceId}`
 
         const response = {
-          dashboard_url: responseUrl,
+          [BrokerUtil.DASHBOARD_URL]: responseUrl,
         }
 
         return response
