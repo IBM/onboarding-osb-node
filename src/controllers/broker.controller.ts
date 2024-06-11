@@ -10,18 +10,18 @@ export class BrokerController {
     try {
       const file = req.file
       if (!file) {
-        res.status(400).send('No file provided. Please upload a catalog file.')
+        res
+          .status(400)
+          .json({ message: 'No file provided. Please upload a catalog file.' })
         return
       }
       const response = await this.brokerService.importCatalog(file)
-      res.status(200).send(response)
+      res.status(200).json(response)
     } catch (error) {
       Logger.error('Error importing catalog:', error)
-      res
-        .status(500)
-        .send(
-          'Internal Server Error while importing catalog. Please try again later.',
-        )
+      res.status(500).json({
+        message: 'Internal Server Error while importing catalog.',
+      })
     }
   }
 
@@ -29,14 +29,12 @@ export class BrokerController {
     try {
       const response = await this.brokerService.getCatalog()
       Logger.info('Request completed: GET /v2/catalog')
-      res.status(200).send(response)
+      res.status(200).json(response)
     } catch (error) {
       Logger.error('Error retrieving catalog:', error)
-      res
-        .status(500)
-        .send(
-          'Internal Server Error while retrieving catalog. Please try again later.',
-        )
+      res.status(500).json({
+        message: 'Internal Server Error while retrieving catalog.',
+      })
     }
   }
 
@@ -70,14 +68,12 @@ export class BrokerController {
         `Create Service Instance Response status: 201, body: ${JSON.stringify(response)}`,
       )
 
-      res.status(200).send(JSON.stringify(response))
+      res.status(200).json(response)
     } catch (error) {
       Logger.error('Error provisioning service instance:', error)
-      res
-        .status(500)
-        .send(
-          'Internal Server Error while provisioning service instance. Please try again later.',
-        )
+      res.status(500).json({
+        message: 'Internal Server Error while provisioning service instance.',
+      })
     }
   }
 
@@ -95,14 +91,12 @@ export class BrokerController {
         req.body,
         originatingIdentity,
       )
-      res.status(200).send(response)
+      res.status(200).json(response)
     } catch (error) {
       Logger.error('Error updating service instance:', error)
-      res
-        .status(500)
-        .send(
-          'Internal Server Error while updating service instance. Please try again later.',
-        )
+      res.status(500).json({
+        message: 'Internal Server Error while updating service instance.',
+      })
     }
   }
 
@@ -116,14 +110,12 @@ export class BrokerController {
         instanceId,
         originatingIdentity,
       )
-      res.status(200).send(state)
+      res.status(200).json(state)
     } catch (error) {
       Logger.error('Error getting state:', error)
-      res
-        .status(500)
-        .send(
-          'Internal Server Error while retrieving state. Please try again later.',
-        )
+      res.status(500).json({
+        message: 'Internal Server Error while retrieving state.',
+      })
     }
   }
 
@@ -136,14 +128,12 @@ export class BrokerController {
         bindingId,
         req.body,
       )
-      res.status(201).send(response)
+      res.status(201).json(response)
     } catch (error) {
       Logger.error('Error binding service:', error)
-      res
-        .status(500)
-        .send(
-          'Internal Server Error while binding service. Please try again later.',
-        )
+      res.status(500).json({
+        message: 'Internal Server Error while binding service.',
+      })
     }
   }
 
@@ -157,14 +147,12 @@ export class BrokerController {
         req.query.plan_id as string,
         req.query.service_id as string,
       )
-      res.status(200).send(response)
+      res.status(200).json(response)
     } catch (error) {
       Logger.error('Error unbinding service:', error)
-      res
-        .status(500)
-        .send(
-          'Internal Server Error while unbinding service. Please try again later.',
-        )
+      res.status(500).json({
+        message: 'Internal Server Error while unbinding service.',
+      })
     }
   }
 
@@ -190,14 +178,12 @@ export class BrokerController {
         `Deprovision Service Instance Response status: 200, body: ${response}`,
       )
 
-      res.status(200).send(JSON.stringify(response))
+      res.status(200).json(response)
     } catch (error) {
       Logger.error('Error deprovisioning service instance:', error)
-      res
-        .status(500)
-        .send(
-          'Internal Server Error while deprovisioning service instance. Please try again later.',
-        )
+      res.status(500).json({
+        message: 'Internal Server Error while deprovisioning service instance.',
+      })
     }
   }
 
@@ -214,14 +200,12 @@ export class BrokerController {
         originatingIdentity,
         bluemixRegion,
       )
-      res.status(200).send(response)
+      res.status(200).json(response)
     } catch (error) {
       Logger.error('Error updating service:', error)
-      res
-        .status(500)
-        .send(
-          'Internal Server Error while updating service. Please try again later.',
-        )
+      res.status(500).json({
+        message: 'Internal Server Error while updating service.',
+      })
     }
   }
 
@@ -238,14 +222,12 @@ export class BrokerController {
         instanceId,
         originatingIdentity,
       )
-      res.status(200).send(response)
+      res.status(200).json(response)
     } catch (error) {
       Logger.error('Error fetching last operation:', error)
-      res
-        .status(500)
-        .send(
-          'Internal Server Error while fetching last operation. Please try again later.',
-        )
+      res.status(500).json({
+        message: 'Internal Server Error while fetching last operation.',
+      })
     }
   }
 }
