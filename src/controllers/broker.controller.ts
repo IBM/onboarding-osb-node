@@ -13,8 +13,8 @@ export class BrokerController {
         res.status(400).send('No file provided. Please upload a catalog file.')
         return
       }
-      const result = await this.brokerService.importCatalog(file)
-      res.status(200).send(result)
+      const response = await this.brokerService.importCatalog(file)
+      res.status(200).send(response)
     } catch (error) {
       Logger.error('Error importing catalog:', error)
       res
@@ -27,9 +27,9 @@ export class BrokerController {
 
   public getCatalog = async (_req: Request, res: Response): Promise<void> => {
     try {
-      const catalog = await this.brokerService.getCatalog()
+      const response = await this.brokerService.getCatalog()
       Logger.info('Request completed: GET /v2/catalog')
-      res.json(catalog)
+      res.status(200).send(response)
     } catch (error) {
       Logger.error('Error retrieving catalog:', error)
       res
@@ -59,7 +59,7 @@ export class BrokerController {
         )
       }
 
-      const result = await this.brokerService.provision(
+      const response = await this.brokerService.provision(
         instanceId,
         req.body,
         iamId,
@@ -67,10 +67,10 @@ export class BrokerController {
       )
 
       Logger.info(
-        `Create Service Instance Response status: 201, body: ${JSON.stringify(result)}`,
+        `Create Service Instance Response status: 201, body: ${JSON.stringify(response)}`,
       )
 
-      res.status(201).json(result)
+      res.status(200).send(JSON.stringify(response))
     } catch (error) {
       Logger.error('Error provisioning service instance:', error)
       res
@@ -90,12 +90,12 @@ export class BrokerController {
       const originatingIdentity =
         req.header('x-broker-api-originating-identity') ?? ''
 
-      const result = await this.brokerService.updateState(
+      const response = await this.brokerService.updateState(
         instanceId,
         req.body,
         originatingIdentity,
       )
-      res.status(200).json(result)
+      res.status(200).send(response)
     } catch (error) {
       Logger.error('Error updating service instance:', error)
       res
@@ -116,7 +116,7 @@ export class BrokerController {
         instanceId,
         originatingIdentity,
       )
-      res.json(state)
+      res.status(200).send(state)
     } catch (error) {
       Logger.error('Error getting state:', error)
       res
@@ -131,12 +131,12 @@ export class BrokerController {
     try {
       const instanceId = req.params.instanceId
       const bindingId = req.params.bindingId
-      const result = await this.brokerService.bind(
+      const response = await this.brokerService.bind(
         instanceId,
         bindingId,
         req.body,
       )
-      res.status(201).json(result)
+      res.status(201).send(response)
     } catch (error) {
       Logger.error('Error binding service:', error)
       res
@@ -151,13 +151,13 @@ export class BrokerController {
     try {
       const instanceId = req.params.instanceId
       const bindingId = req.params.bindingId
-      const result = await this.brokerService.unbind(
+      const response = await this.brokerService.unbind(
         instanceId,
         bindingId,
         req.query.plan_id as string,
         req.query.service_id as string,
       )
-      res.status(200).json(result)
+      res.status(200).send(response)
     } catch (error) {
       Logger.error('Error unbinding service:', error)
       res
@@ -179,7 +179,7 @@ export class BrokerController {
         `Deprovision Service Instance request received: DELETE /v2/service_instances/${instanceId}?accepts_incomplete=${acceptsIncomplete}&plan_id=${planId}&service_id=${serviceId}`,
       )
 
-      const result = await this.brokerService.deprovision(
+      const response = await this.brokerService.deprovision(
         instanceId,
         planId,
         serviceId,
@@ -187,10 +187,10 @@ export class BrokerController {
       )
 
       Logger.info(
-        `Deprovision Service Instance Response status: 200, body: ${result}`,
+        `Deprovision Service Instance Response status: 200, body: ${response}`,
       )
 
-      res.status(200).json(result)
+      res.status(200).send(JSON.stringify(response))
     } catch (error) {
       Logger.error('Error deprovisioning service instance:', error)
       res
@@ -208,13 +208,13 @@ export class BrokerController {
         req.header('x-broker-api-originating-identity') ?? ''
       const bluemixRegion = req.header('x-bluemix-region') ?? ''
 
-      const result = await this.brokerService.update(
+      const response = await this.brokerService.update(
         instanceId,
         req.body,
         originatingIdentity,
         bluemixRegion,
       )
-      res.status(200).json(result)
+      res.status(200).send(response)
     } catch (error) {
       Logger.error('Error updating service:', error)
       res
@@ -234,11 +234,11 @@ export class BrokerController {
       const originatingIdentity =
         req.header('x-broker-api-originating-identity') ?? ''
 
-      const result = await this.brokerService.lastOperation(
+      const response = await this.brokerService.lastOperation(
         instanceId,
         originatingIdentity,
       )
-      res.status(200).json(result)
+      res.status(200).send(response)
     } catch (error) {
       Logger.error('Error fetching last operation:', error)
       res
