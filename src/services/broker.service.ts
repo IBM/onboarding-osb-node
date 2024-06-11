@@ -1,6 +1,8 @@
+import { Catalog } from '../models/catalog.model'
+
 export interface BrokerService {
   importCatalog(file: Express.Multer.File): Promise<string>
-  getCatalog(): Promise<string>
+  getCatalog(): Promise<Catalog>
   provision(
     instanceId: string,
     details: any,
