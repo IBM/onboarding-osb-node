@@ -175,7 +175,7 @@ export class BrokerController {
       )
 
       Logger.info(
-        `Deprovision Service Instance Response status: 200, body: ${response}`,
+        `Deprovision Service Instance Response status: 200, body: ${JSON.stringify(response)}`,
       )
 
       res.status(200).json(response)
