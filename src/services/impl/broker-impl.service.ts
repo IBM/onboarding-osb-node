@@ -1,7 +1,6 @@
 import { BrokerService } from '../broker.service'
 import fs from 'fs'
 import { promisify } from 'util'
-import { getRepository, FindOneOptions } from 'typeorm'
 import { Catalog } from '../../models/catalog.model'
 import { CreateServiceInstanceRequest } from '../../models/create-service-instance-request.model'
 import { ServiceDefinition } from '../../models/service-definition.model'
@@ -12,6 +11,7 @@ import { ServiceInstance } from '../../db/entities/service-instance.entity'
 import BrokerUtil from '../../utils/brokerUtil'
 import { CatalogUtil } from '../../utils/catalogUtil'
 import { ServiceInstanceStatus } from '../../enums/service-instance-status'
+import { OperationState } from '../../enums/operation-state'
 import AppDataSource from '../../db/data-source'
 
 export class BrokerServiceImpl implements BrokerService {
@@ -163,31 +163,15 @@ export class BrokerServiceImpl implements BrokerService {
     }
   }
 
-  async update(instanceId: string, updateData: any): Promise<any> {
+  public async lastOperation(instanceId: string, iamId: string): Promise<any> {
     try {
-      await getRepository(ServiceInstance).update({ instanceId }, updateData)
+      Logger.info(
+        `last_operation Response status: 200, body: ${instanceId} ${iamId}`,
+      )
+
       const response = {
-        message: 'Service instance updated',
-        instanceId: instanceId,
+        [BrokerServiceImpl.INSTANCE_STATE]: OperationState.SUCCEEDED,
       }
-      return response
-    } catch (error) {
-      Logger.error('Error updating service instance:', error)
-      throw new Error('Error updating service instance')
-    }
-  }
-
-  async lastOperation(instanceId: string): Promise<any> {
-    try {
-      const operation = await getRepository(ServiceInstance).findOne({
-        where: { instanceId },
-      } as FindOneOptions<ServiceInstance>)
-
-      if (!operation) {
-        throw new Error('Service instance not found')
-      }
-
-      const response = { state: 'succeeded' }
       return response
     } catch (error) {
       Logger.error('Error fetching last operation:', error)
@@ -195,86 +179,45 @@ export class BrokerServiceImpl implements BrokerService {
     }
   }
 
-  async updateState(instanceId: string, updateData: any): Promise<any> {
+  async updateState(
+    instanceId: string,
+    json: any,
+    iamId: string,
+  ): Promise<any> {
     try {
-      const updateStateRequest = new UpdateStateRequest(updateData)
-      await getRepository(ServiceInstance).update(
-        { instanceId },
-        { enabled: updateStateRequest.enabled },
+      console.log('instanceId: ', instanceId)
+      console.log('iamId: ', iamId)
+
+      const updateStateRequest: UpdateStateRequest = JSON.parse(
+        JSON.stringify(json),
       )
-      const response = new ServiceInstanceStateResponse({
-        active: updateStateRequest.enabled,
-        enabled: updateStateRequest.enabled,
-      })
+
+      const response: ServiceInstanceStateResponse = {
+        active: updateStateRequest.enabled || false,
+        enabled: updateStateRequest.enabled || false,
+      }
+
       return response
     } catch (error) {
-      Logger.error('Error updating instance state:', error)
-      throw new Error('Error updating instance state')
+      Logger.error('Error updating service instance state:', error)
+      throw new Error('Error updating service instance state')
     }
   }
 
-  async getState(instanceId: string): Promise<any> {
+  async getState(instanceId: string, iamId: string): Promise<any> {
     try {
-      const state = await getRepository(ServiceInstance).findOne({
-        where: { instanceId },
-      } as FindOneOptions<ServiceInstance>)
+      console.log('instanceId: ', instanceId)
+      console.log('iamId: ', iamId)
 
-      if (!state) {
-        throw new Error('Service instance not found')
-      }
-
-      const response = new ServiceInstanceStateResponse({
+      const response: ServiceInstanceStateResponse = {
         active: false,
         enabled: false,
-      })
+      }
+
       return response
     } catch (error) {
       Logger.error('Error getting instance state:', error)
       throw new Error('Error getting instance state')
-    }
-  }
-
-  async bind(instanceId: string, bindingId: string): Promise<any> {
-    try {
-      const serviceInstance = await getRepository(ServiceInstance).findOne({
-        where: { instanceId },
-      } as FindOneOptions<ServiceInstance>)
-
-      if (!serviceInstance) {
-        throw new Error('Service instance not found')
-      }
-      // Perform binding logic here
-      const response = {
-        message: 'Service instance bound',
-        instanceId: instanceId,
-        bindingId: bindingId,
-      }
-      return response
-    } catch (error) {
-      Logger.error('Error binding service instance:', error)
-      throw new Error('Error binding service instance')
-    }
-  }
-
-  async unbind(instanceId: string, bindingId: string): Promise<any> {
-    try {
-      const serviceInstance = await getRepository(ServiceInstance).findOne({
-        where: { instanceId },
-      } as FindOneOptions<ServiceInstance>)
-
-      if (!serviceInstance) {
-        throw new Error('Service instance not found')
-      }
-      // Perform unbinding logic here
-      const response = {
-        message: 'Service instance unbound',
-        instanceId: instanceId,
-        bindingId: bindingId,
-      }
-      return response
-    } catch (error) {
-      Logger.error('Error unbinding service instance:', error)
-      throw new Error('Error unbinding service instance')
     }
   }
 

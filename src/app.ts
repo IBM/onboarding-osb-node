@@ -12,6 +12,9 @@ import { basicAuth } from './middlewares/authorization'
 
 dotenv.config()
 
+const appBuildNumber = process.env.APP_BUILD_NUMBER
+console.log(`App Build Number: ${appBuildNumber}`)
+
 const app = express()
 const PORT = process.env.PORT || 3000
 
