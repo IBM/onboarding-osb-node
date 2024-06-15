@@ -56,10 +56,19 @@ export class BrokerRoutes {
      */
     router.put('/v2/service_instances/:instanceId', controller.provision)
 
+    /**
+     * IBM Cloud Enablement Extension: enable service instance
+     * @throws IOException
+     */
     router.put(
       '/bluemix_v1/service_instances/:instanceId',
-      controller.updateServiceInstance,
+      controller.updateState,
     )
+
+    /**
+     * IBM Cloud Enablement Extension: service instance state inquiry.
+     * @throws IOException
+     */
     router.get('/bluemix_v1/service_instances/:instanceId', controller.getState)
     router.put(
       '/v2/service_instances/:instanceId/service_bindings/:bindingId',
@@ -83,37 +92,7 @@ export class BrokerRoutes {
       '/v2/service_instances/:instanceId/last_operation',
       controller.fetchLastOperation,
     )
-
-    router.get('/provision_status', (req, res) => {
-      const instanceId = req.query.instance_id as string
-      const type = req.query.type as string
-      const responseHtml = `
-        <html>
-          <style>
-            body { font-family: 'IBM Plex Sans', 'Helvetica Neue', Arial, sans-serif; padding: 10px; }
-            .flex-wrapper { display: flex; flex-direction: column; }
-            .flex-row { display: flex; flex-direction: row; margin-top: 5px; }
-            .strong-div { min-width: 10%; }
-            .hr-short { width: 100%; background: lightgrey; }
-          </style>
-          <body>
-            <h4>Deployment Details</h4>
-            <div class="flex-wrapper">
-              <div class="flex-row">
-                <div class="strong-div"><strong>Type:</strong></div>
-                <div>${type}</div>
-              </div>
-              <hr class="hr-short"/>
-              <div class="flex-row">
-                <div class="strong-div"><strong>Instance ID:</strong></div>
-                <div>${instanceId}</div>
-              </div>
-            </div>
-          </body>
-        </html>
-      `
-      res.send(responseHtml)
-    })
+    router.get('/provision_status', controller.getProvisionStatus)
 
     return router
   }

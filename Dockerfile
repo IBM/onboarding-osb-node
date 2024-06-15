@@ -1,20 +1,29 @@
 # Use the official Node.js image as the base image
-FROM node:20 as builder
-
-WORKDIR /usr/src/app
-COPY package.json yarn.lock tsconfig.json ./
-RUN yarn install
-COPY src src
-RUN npm run build
-
 FROM node:20
 
-WORKDIR /app
-COPY --from=builder /usr/src/app/node_modules ./node_modules
-COPY --from=builder /usr/src/app/dist ./dist
+# Create and change to the app directory
+WORKDIR /usr/src/app
 
-ENV NODE_ENV=production
+# Copy the package.json and yarn.lock files to the working directory
+COPY package.json yarn.lock ./
 
+# Install dependencies
+RUN yarn install
+
+# Copy the rest of the application code to the working directory
+COPY . .
+
+# Copy the .env.example file to .env
+RUN cp .env.example .env
+
+# Install nodemon globally for development
+RUN yarn global add nodemon
+
+# Ensure wait-for-it.sh is executable
+# RUN chmod +x wait-for-it.sh
+
+# Expose the port the app runs on
 EXPOSE 3001
 
-ENTRYPOINT [ "node", "dist/app.js" ]
+# Define the command to run the application in development mode
+CMD ["yarn", "start:dev"]
