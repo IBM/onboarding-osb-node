@@ -26,7 +26,7 @@ export class BrokerServiceImpl implements BrokerService {
     this.catalog = new Catalog([])
   }
 
-  async importCatalog(file: Express.Multer.File): Promise<any> {
+  public async importCatalog(file: Express.Multer.File): Promise<any> {
     const readFile = promisify(fs.readFile)
 
     try {
@@ -64,11 +64,11 @@ export class BrokerServiceImpl implements BrokerService {
     }
   }
 
-  async getCatalog(): Promise<Catalog> {
+  public async getCatalog(): Promise<Catalog> {
     return this.catalog
   }
 
-  async provision(
+  public async provision(
     instanceId: string,
     details: any,
     iamId: string,
@@ -148,7 +148,7 @@ export class BrokerServiceImpl implements BrokerService {
     return null
   }
 
-  async deprovision(instanceId: string): Promise<any> {
+  public async deprovision(instanceId: string): Promise<any> {
     try {
       const serviceInstanceRepository =
         AppDataSource.getRepository(ServiceInstance)
@@ -179,7 +179,7 @@ export class BrokerServiceImpl implements BrokerService {
     }
   }
 
-  async updateState(
+  public async updateState(
     instanceId: string,
     json: any,
     iamId: string,
@@ -204,7 +204,7 @@ export class BrokerServiceImpl implements BrokerService {
     }
   }
 
-  async getState(instanceId: string, iamId: string): Promise<any> {
+  public async getState(instanceId: string, iamId: string): Promise<any> {
     try {
       console.log('instanceId: ', instanceId)
       console.log('iamId: ', iamId)

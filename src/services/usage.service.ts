@@ -1,4 +1,4 @@
-import { MeteringPayload } from '../models/metering-payload.interface'
+import { MeteringPayload } from '../models/metering-payload.model'
 
 export interface UsageService {
   sendUsageData(

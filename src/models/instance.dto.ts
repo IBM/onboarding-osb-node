@@ -1,9 +1,21 @@
+import { IsNotEmpty } from 'class-validator'
 export class InstanceDto {
+  @IsNotEmpty()
   instanceId: string
+
+  @IsNotEmpty()
   name: string
+
+  @IsNotEmpty()
   planId: string
+
+  @IsNotEmpty()
   status: string
+
+  @IsNotEmpty()
   region: string
+
+  @IsNotEmpty()
   updateDate: Date
 
   constructor(

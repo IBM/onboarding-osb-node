@@ -1,5 +1,9 @@
+import { IsNotEmpty } from 'class-validator'
 export class MeasuredUsage {
+  @IsNotEmpty()
   measure: string
+
+  @IsNotEmpty()
   quantity: number
 
   constructor(measure: string, quantity: number) {
