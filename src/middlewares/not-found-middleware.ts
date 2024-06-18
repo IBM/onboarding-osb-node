@@ -1,11 +1,7 @@
+import { RequestHandler } from 'express'
 import NotFoundError from '../errors/not-found-error'
-import { Request, Response, NextFunction } from 'express'
 
-export const notFoundMiddleware = (
-  req: Request,
-  res: Response,
-  next: NextFunction,
-) => {
+export const notFoundMiddleware: RequestHandler = (req, res, next) => {
   const error = new NotFoundError(
     `The requested resource '${req.originalUrl}' was not found.`,
   )

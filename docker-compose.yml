@@ -12,7 +12,6 @@ services:
       DB_USER: ${DB_USER}
       DB_USER_PWD: ${DB_USER_PWD}
       DB_NAME: ${DB_NAME}
-      JWT_SECRET: ${JWT_SECRET}
       PORT: ${PORT}
       BROKER_USERNAME: ${BROKER_USERNAME}
       BROKER_PASSWORD: ${BROKER_PASSWORD}
@@ -26,7 +25,7 @@ services:
       - postgres
 
   postgres:
-    image: postgres:13
+    image: postgres:15
     environment:
       POSTGRES_USER: ${DB_USER}
       POSTGRES_PASSWORD: ${DB_USER_PWD}

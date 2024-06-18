@@ -1,5 +1,6 @@
 import { Request } from 'express'
 import { Base64 } from 'js-base64'
+import logger from './logger'
 
 interface IAMIdentity {
   iam_id: string
@@ -8,16 +9,12 @@ interface IAMIdentity {
 class BrokerUtil {
   static PLATFORM = 'platform'
   static IBM_CLOUD = 'ibmcloud'
-  static LITE_PLAN = 'lite'
   static ORIGINATING_IDENTITY_HEADER = 'x-broker-api-originating-identity'
   static BLUEMIX_REGION_HEADER = 'x-bluemix-region'
   static DESCRIPTION = 'description'
   static ERROR = 'error'
   static DASHBOARD_URL = 'dashboard_url'
   static IBM_IUID_PREFIX = 'IBMid-'
-
-  // test monitor instance
-  static TEST_INSTANCE_ID = 'crnTest111'
 
   static getIamId(req: Request): string | null {
     try {
@@ -35,7 +32,7 @@ class BrokerUtil {
 
       return null
     } catch (error) {
-      console.error('Error parsing IAM identity:', error)
+      logger.error(`Error parsing IAM identity: ${error}`)
       return null
     }
   }

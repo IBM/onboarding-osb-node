@@ -1,11 +1,8 @@
+import 'dotenv/config'
+import path from 'path'
 import 'reflect-metadata'
-import dotenv from 'dotenv'
 import { DataSource } from 'typeorm'
 import { DataSourceOptions } from 'typeorm'
-import path from 'path'
-import Logger from '../utils/logger'
-
-dotenv.config()
 
 const { DB_CERT, DB_HOST, DB_PORT, DB_USER, DB_USER_PWD, DB_NAME, NODE_ENV } =
   process.env
@@ -30,12 +27,6 @@ const connectionOptions: DataSourceOptions = {
     : undefined,
 }
 
-Logger.info('DB Configuration:', connectionOptions)
-const path1 = path.join(__dirname, 'entities/**/*.ts')
-Logger.info(`dirname: ${path1}`)
-
-const path2 = path.join(process.cwd(), '/src/db/entities/**/*.ts')
-Logger.info(`process: ${path2}`)
 const AppDataSource = new DataSource(connectionOptions)
 
 export default AppDataSource

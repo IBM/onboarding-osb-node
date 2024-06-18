@@ -1,12 +1,12 @@
-import { BrokerService } from '../broker.service'
-import fs from 'fs'
 import { promisify } from 'util'
+import fs from 'fs'
+import { BrokerService } from '../broker.service'
 import { Catalog } from '../../models/catalog.model'
 import { CreateServiceInstanceRequest } from '../../models/create-service-instance-request.model'
 import { ServiceDefinition } from '../../models/service-definition.model'
 import { UpdateStateRequest } from '../../models/update-state-request.model'
 import { ServiceInstanceStateResponse } from '../../models/response/service-instance-state-response.model'
-import Logger from '../../utils/logger'
+import logger from '../../utils/logger'
 import { ServiceInstance } from '../../db/entities/service-instance.entity'
 import BrokerUtil from '../../utils/brokerUtil'
 import { CatalogUtil } from '../../utils/catalogUtil'
@@ -55,12 +55,12 @@ export class BrokerServiceImpl implements BrokerService {
           ),
       )
       this.catalog = new Catalog(serviceDefinitions)
-      Logger.info(`Imported catalog: ${JSON.stringify(this.catalog)}`)
+      logger.info(`Imported catalog: ${JSON.stringify(this.catalog)}`)
 
       return catalogJson
     } catch (error) {
-      Logger.error('Failed to import catalog:', error)
-      throw new Error('Error processing catalog file')
+      logger.error(`Failed to import catalog: ${error}`)
+      throw error
     }
   }
 
@@ -89,7 +89,7 @@ export class BrokerServiceImpl implements BrokerService {
         )
 
         if (!plan) {
-          Logger.error(
+          logger.error(
             `Plan id:${createServiceRequest.plan_id} does not belong to this service: ${createServiceRequest.service_id}`,
           )
           throw new Error(`Invalid plan id: ${createServiceRequest.plan_id}`)
@@ -105,7 +105,7 @@ export class BrokerServiceImpl implements BrokerService {
           AppDataSource.getRepository(ServiceInstance)
         await serviceInstanceRepository.save(serviceInstance)
 
-        Logger.info(
+        logger.info(
           `Service Instance created: instanceId: ${instanceId} status: ${serviceInstance.status} planId: ${plan.id}`,
         )
 
@@ -120,7 +120,7 @@ export class BrokerServiceImpl implements BrokerService {
 
         return response
       } else {
-        Logger.error(
+        logger.error(
           `Unidentified platform: ${createServiceRequest.context?.platform}`,
         )
         throw new Error(
@@ -128,7 +128,7 @@ export class BrokerServiceImpl implements BrokerService {
         )
       }
     } catch (error) {
-      Logger.error('Error provisioning service instance:', error)
+      logger.error('Error provisioning service instance:', error)
       throw new Error('Error provisioning service instance')
     }
   }
@@ -158,14 +158,14 @@ export class BrokerServiceImpl implements BrokerService {
       const response = { description: 'Deprovisioned' }
       return response
     } catch (error) {
-      Logger.error('Error deprovisioning service instance:', error)
+      logger.error('Error deprovisioning service instance:', error)
       throw new Error('Error deprovisioning service instance')
     }
   }
 
   public async lastOperation(instanceId: string, iamId: string): Promise<any> {
     try {
-      Logger.info(
+      logger.info(
         `last_operation Response status: 200, body: ${instanceId} ${iamId}`,
       )
 
@@ -174,7 +174,7 @@ export class BrokerServiceImpl implements BrokerService {
       }
       return response
     } catch (error) {
-      Logger.error('Error fetching last operation:', error)
+      logger.error('Error fetching last operation:', error)
       throw new Error('Error fetching last operation')
     }
   }
@@ -182,12 +182,10 @@ export class BrokerServiceImpl implements BrokerService {
   public async updateState(
     instanceId: string,
     json: any,
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     iamId: string,
   ): Promise<any> {
     try {
-      console.log('instanceId: ', instanceId)
-      console.log('iamId: ', iamId)
-
       const updateStateRequest: UpdateStateRequest = JSON.parse(
         JSON.stringify(json),
       )
@@ -199,16 +197,14 @@ export class BrokerServiceImpl implements BrokerService {
 
       return response
     } catch (error) {
-      Logger.error('Error updating service instance state:', error)
+      logger.error('Error updating service instance state:', error)
       throw new Error('Error updating service instance state')
     }
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   public async getState(instanceId: string, iamId: string): Promise<any> {
     try {
-      console.log('instanceId: ', instanceId)
-      console.log('iamId: ', iamId)
-
       const response: ServiceInstanceStateResponse = {
         active: false,
         enabled: false,
@@ -216,7 +212,7 @@ export class BrokerServiceImpl implements BrokerService {
 
       return response
     } catch (error) {
-      Logger.error('Error getting instance state:', error)
+      logger.error('Error getting instance state:', error)
       throw new Error('Error getting instance state')
     }
   }

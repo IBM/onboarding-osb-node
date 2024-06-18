@@ -1,47 +1,43 @@
-import { Request, Response } from 'express'
+import { RequestHandler } from 'express'
 import { SupportInfoService } from '../services/support-info.service'
-import Logger from '../utils/logger'
+import logger from '../utils/logger'
 
 export class SupportInfoController {
   constructor(private supportInfoService: SupportInfoService) {}
 
-  public getInstances = async (req: Request, res: Response): Promise<void> => {
+  public getInstances: RequestHandler = async (req, res, next) => {
     try {
-      Logger.info(
+      logger.info(
         `Request received: GET /support/instances request headers: ${JSON.stringify(req.headers)}`,
       )
 
       const instances = await this.supportInfoService.getServiceInstances()
 
-      Logger.info('Request completed: GET /support/instances')
+      logger.info('Request completed: GET /support/instances')
       res.status(200).json(instances)
     } catch (error) {
-      Logger.error('Error retrieving instances:', error)
-      res
-        .status(500)
-        .send(
-          'Internal Server Error while retrieving instances. Please try again later.',
-        )
+      logger.error(`Error retrieving instances: ${error}`)
+      next(error)
     }
   }
 
-  public getMetadata = async (req: Request, res: Response): Promise<void> => {
+  public getMetadata: RequestHandler = async (
+    req,
+    res,
+    next,
+  ): Promise<void> => {
     try {
-      Logger.info(
+      logger.info(
         `Request received: GET /support/metadata request headers: ${JSON.stringify(req.headers)}`,
       )
 
       const metadata = await this.supportInfoService.getMetadata()
 
-      Logger.info('Request completed: GET /support/metadata')
+      logger.info('Request completed: GET /support/metadata')
       res.status(200).json(metadata)
     } catch (error) {
-      Logger.error('Error retrieving metadata:', error)
-      res
-        .status(500)
-        .send(
-          'Internal Server Error while retrieving metadata. Please try again later.',
-        )
+      logger.error(`Error retrieving metadata: ${error}`)
+      next(error)
     }
   }
 }

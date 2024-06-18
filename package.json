@@ -3,14 +3,12 @@
   "version": "1.0.0",
   "description": "Open Service Broker Reference App",
   "private": true,
-  "main": "dist/src/app.js",
   "repository": {
     "type": "git",
     "url": "https://github.com/IBM/onboarding-osb-node.git"
   },
   "keywords": [],
-  "author": "Shohel Rana <cse_shohel@yahoo.com>",
-  "license": "MIT",
+  "license": "Apache-2.0",
   "scripts": {
     "clean": "rm -rf dist",
     "watch": "tsc -w",
@@ -22,7 +20,7 @@
     "start:dev": "concurrently \"yarn watch\" \"yarn dev\"",
     "start:dist": "node dist/src/app.js",
     "typeorm": "ts-node ./node_modules/typeorm/cli.js",
-    "migrate:generate": "yarn typeorm migration:generate -d ./src/db/data-source.ts -n",
+    "migrate:generate": "yarn typeorm migration:generate -d ./src/db/data-source.ts",
     "migrate": "yarn typeorm migration:run -d ./src/db/data-source.ts",
     "lint": "eslint src/**/*.ts",
     "lint-fix": "eslint src/**/*.ts --fix",

@@ -1,16 +1,20 @@
-import { Request, Response } from 'express'
+import { RequestHandler } from 'express'
 import { UsageService } from '../services/usage.service'
-import Logger from '../utils/logger'
+import logger from '../utils/logger'
 
 export class UsageController {
   constructor(private usageService: UsageService) {}
 
-  public sendUsageData = async (req: Request, res: Response): Promise<void> => {
+  public sendUsageData: RequestHandler = async (
+    req,
+    res,
+    next,
+  ): Promise<void> => {
     try {
       const resourceId = req.params.resourceId
       const meteringPayload = req.body
 
-      Logger.info(
+      logger.info(
         `Request received: POST /usage request with resourceId: ${resourceId} payload: ${JSON.stringify(meteringPayload)}`,
       )
 
@@ -20,12 +24,8 @@ export class UsageController {
       )
       res.status(200).json(response)
     } catch (error) {
-      Logger.error('Error sending usage data:', error)
-      res
-        .status(500)
-        .send(
-          'Internal Server Error while sending usage data. Please try again later.',
-        )
+      logger.error(`Error sending usage data: ${error}`)
+      next(error)
     }
   }
 }

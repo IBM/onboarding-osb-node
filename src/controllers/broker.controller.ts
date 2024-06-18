@@ -1,12 +1,12 @@
-import { Request, Response } from 'express'
+import { RequestHandler } from 'express'
 import { BrokerService } from '../services/broker.service'
-import Logger from '../utils/logger'
+import logger from '../utils/logger'
 import BrokerUtil from '../utils/brokerUtil'
 
 export class BrokerController {
   constructor(private brokerService: BrokerService) {}
 
-  public importCatalog = async (req: Request, res: Response): Promise<void> => {
+  public importCatalog: RequestHandler = async (req, res, next) => {
     try {
       const file = req.file
       if (!file) {
@@ -18,32 +18,28 @@ export class BrokerController {
       const response = await this.brokerService.importCatalog(file)
       res.status(200).json(response)
     } catch (error) {
-      Logger.error('Error importing catalog:', error)
-      res.status(500).json({
-        message: 'Internal Server Error while importing catalog.',
-      })
+      logger.error(`Error importing catalog: ${error}`)
+      next(error)
     }
   }
 
-  public getCatalog = async (_req: Request, res: Response): Promise<void> => {
+  public getCatalog: RequestHandler = async (_req, res, next) => {
     try {
       const response = await this.brokerService.getCatalog()
-      Logger.info('Request completed: GET /v2/catalog')
+      logger.info('Request completed: GET /v2/catalog')
       res.status(200).json(response)
     } catch (error) {
-      Logger.error('Error retrieving catalog:', error)
-      res.status(500).json({
-        message: 'Internal Server Error while retrieving catalog.',
-      })
+      logger.error(`Error retrieving catalog: ${error}`)
+      next(error)
     }
   }
 
-  public provision = async (req: Request, res: Response): Promise<void> => {
+  public provision: RequestHandler = async (req, res, next) => {
     try {
       const instanceId = req.params.instanceId ?? ''
       const acceptsIncomplete = req.query.accepts_incomplete === 'true'
 
-      Logger.info(
+      logger.info(
         `Create Service Instance request received: PUT /v2/service_instances/${instanceId}?accepts_incomplete=${acceptsIncomplete} request body: ${JSON.stringify(req.body)}`,
       )
 
@@ -64,24 +60,22 @@ export class BrokerController {
         bluemixRegion,
       )
 
-      Logger.info(
+      logger.info(
         `Create Service Instance Response status: 201, body: ${JSON.stringify(response)}`,
       )
 
       res.status(200).json(response)
     } catch (error) {
-      Logger.error('Error provisioning service instance:', error)
-      res.status(500).json({
-        message: 'Internal Server Error while provisioning service instance.',
-      })
+      logger.error(`Error provisioning service instance: ${error}`)
+      next(error)
     }
   }
 
-  public updateState = async (req: Request, res: Response): Promise<void> => {
+  public updateState: RequestHandler = async (req, res, next) => {
     try {
       const instanceId = req.params.instanceId
 
-      Logger.info(
+      logger.info(
         `Update instance state request received: PUT /bluemix_v1/service_instances/${instanceId} request body: ${JSON.stringify(req.body)}`,
       )
 
@@ -91,24 +85,22 @@ export class BrokerController {
         BrokerUtil.getIamId(req) ?? '',
       )
 
-      Logger.info(
+      logger.info(
         `Update instance state response status: 200, body: ${JSON.stringify(response)}`,
       )
 
       res.status(200).json(response)
     } catch (error) {
-      Logger.error('Error updating service instance:', error)
-      res.status(500).json({
-        message: 'Internal Server Error while updating service instance.',
-      })
+      logger.error('Error updating service instance:', error)
+      next(error)
     }
   }
 
-  public getState = async (req: Request, res: Response): Promise<void> => {
+  public getState: RequestHandler = async (req, res, next) => {
     try {
       const instanceId = req.params.instanceId
 
-      Logger.info(
+      logger.info(
         `Get instance state request received: GET /bluemix_v1/service_instances/${instanceId}`,
       )
 
@@ -117,76 +109,70 @@ export class BrokerController {
         BrokerUtil.getIamId(req) ?? '',
       )
 
-      Logger.info(
+      logger.info(
         `Get instance state response status: 200, body: ${JSON.stringify(response)}`,
       )
 
       res.status(200).json(response)
     } catch (error) {
-      Logger.error('Error getting state:', error)
-      res.status(500).json({
-        message: 'Internal Server Error while retrieving state.',
-      })
+      logger.error(`Error getting state: ${error}`)
+      next(error)
     }
   }
 
-  public bind = async (req: Request, res: Response): Promise<void> => {
+  public bind: RequestHandler = async (req, res, next) => {
     try {
       const instanceId = req.params.instanceId
       const bindingId = req.params.bindingId
 
-      Logger.info(
+      logger.info(
         `Bind request received: PUT /v2/service_instances/${instanceId}/service_bindings/${bindingId} request body: ${JSON.stringify(req.body)}`,
       )
 
       const response = {}
 
-      Logger.info(
+      logger.info(
         `Bind response status: 201, body: ${JSON.stringify(response)}`,
       )
 
       res.status(201).json(response)
     } catch (error) {
-      Logger.error('Error binding service:', error)
-      res.status(500).json({
-        message: 'Internal Server Error while binding service.',
-      })
+      logger.error(`Error binding service: ${error}`)
+      next(error)
     }
   }
 
-  public unbind = async (req: Request, res: Response): Promise<void> => {
+  public unbind: RequestHandler = async (req, res, next) => {
     try {
       const instanceId = req.params.instanceId
       const bindingId = req.params.bindingId
       const plan_id = req.query?.plan_id || ''
       const service_id = req.query?.service_id || ''
 
-      Logger.info(
+      logger.info(
         `Unbind request received: DELETE /v2/service_instances/${instanceId}/service_bindings/${bindingId}?plan_id=${plan_id}&service_id=${service_id}`,
       )
 
       const response = {}
-      Logger.info(
+      logger.info(
         `Unbind response status: 200, body: ${JSON.stringify(response)}`,
       )
 
       res.status(200).json(response)
     } catch (error) {
-      Logger.error('Error unbinding service:', error)
-      res.status(500).json({
-        message: 'Internal Server Error while unbinding service.',
-      })
+      logger.error(`Error unbinding service: ${error}`)
+      next(error)
     }
   }
 
-  public deprovision = async (req: Request, res: Response): Promise<void> => {
+  public deprovision: RequestHandler = async (req, res, next) => {
     try {
       const instanceId = req.params.instanceId
       const acceptsIncomplete = req.query.accepts_incomplete === 'true'
       const planId = req.query.plan_id as string
       const serviceId = req.query.service_id as string
 
-      Logger.info(
+      logger.info(
         `Deprovision Service Instance request received: DELETE /v2/service_instances/${instanceId}?accepts_incomplete=${acceptsIncomplete}&plan_id=${planId}&service_id=${serviceId}`,
       )
 
@@ -197,54 +183,47 @@ export class BrokerController {
         BrokerUtil.getIamId(req) ?? '',
       )
 
-      Logger.info(
+      logger.info(
         `Deprovision Service Instance Response status: 200, body: ${JSON.stringify(response)}`,
       )
 
       res.status(200).json(response)
     } catch (error) {
-      Logger.error('Error deprovisioning service instance:', error)
-      res.status(500).json({
-        message: 'Internal Server Error while deprovisioning service instance.',
-      })
+      logger.error(`Error deprovisioning service instance: ${error}`)
+      next(error)
     }
   }
 
-  public update = async (req: Request, res: Response): Promise<void> => {
+  public update: RequestHandler = async (req, res, next) => {
     try {
       const instanceId = req.params.instanceId
       const acceptsIncomplete = req.query.accepts_incomplete === 'true'
 
-      Logger.info(
+      logger.info(
         `Update Service Instance request received: PATCH /v2/service_instances/${instanceId}?accepts_incomplete=${acceptsIncomplete} request body: ${JSON.stringify(req.body)}`,
       )
 
       const response = {}
 
-      Logger.info(
+      logger.info(
         `Update Service Instance Response status: 200, body: ${JSON.stringify(response)}`,
       )
 
       res.status(200).json(response)
     } catch (error) {
-      Logger.error('Error updating service instance:', error)
-      res.status(500).json({
-        message: 'Internal Server Error while updating service instance.',
-      })
+      logger.error(`Error updating service instance: ${error}`)
+      next(error)
     }
   }
 
-  public fetchLastOperation = async (
-    req: Request,
-    res: Response,
-  ): Promise<void> => {
+  public fetchLastOperation: RequestHandler = async (req, res, next) => {
     try {
       const instanceId = req.params.instanceId
       const operation = req.query.operation as string | undefined
       const planId = req.query.plan_id as string
       const serviceId = req.query.service_id as string
 
-      Logger.info(
+      logger.info(
         `Get last_operation request received: GET /v2/service_instances/${instanceId}?operation=${operation}&plan_id=${planId}&service_id=${serviceId}`,
       )
 
@@ -255,23 +234,18 @@ export class BrokerController {
         originatingIdentity,
       )
 
-      Logger.info(
+      logger.info(
         `last_operation Response status: 200, body: ${JSON.stringify(response)}`,
       )
 
       res.status(200).json(response)
     } catch (error) {
-      Logger.error('Error fetching last operation:', error)
-      res.status(500).json({
-        message: 'Internal Server Error while fetching last operation.',
-      })
+      logger.error(`Error fetching last operation: ${error}`)
+      next(error)
     }
   }
 
-  public getProvisionStatus = async (
-    req: Request,
-    res: Response,
-  ): Promise<void> => {
+  public getProvisionStatus: RequestHandler = async (req, res, next) => {
     try {
       const instance_id = req.query.instance_id as string
       const type = req.query.type as string
@@ -319,10 +293,8 @@ export class BrokerController {
 
       res.status(200).send(homepage)
     } catch (error) {
-      Logger.error('Error generating provision status page:', error)
-      res
-        .status(500)
-        .send('Internal Server Error while generating provision status page.')
+      logger.error(`Error generating provision status page: ${error}`)
+      next(error)
     }
   }
 }

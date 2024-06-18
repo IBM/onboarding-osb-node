@@ -1,7 +1,7 @@
 import { Router } from 'express'
-import { BrokerRoutes } from './routes/broker.routes'
-import { UsageRoutes } from './routes/usage.routes'
-import { SupportInfoRoutes } from './routes/support-info.routes'
+import { BrokerRoutes } from './broker.routes'
+import { UsageRoutes } from './usage.routes'
+import { SupportInfoRoutes } from './support-info.routes'
 
 export class AppRoutes {
   static get routes(): Router {

@@ -1,19 +1,14 @@
-import { Request, Response, NextFunction } from 'express'
+import { ErrorRequestHandler } from 'express'
 import BaseError from '../errors/base-error'
-import Logger from '../utils/logger'
+import logger from '../utils/logger'
 
-export const errorHandler = (
-  err: any,
-  req: Request,
-  res: Response,
-  next: NextFunction,
-) => {
+export const errorHandler: ErrorRequestHandler = (err, req, res, next) => {
   if (res.headersSent) {
     return next(err)
   }
 
   if (err instanceof BaseError) {
-    Logger.error(
+    logger.error(
       `Handled Error - Code: ${err.statusCode}, Message: ${err.message}, Is Operational: ${err.isOperational}`,
       {
         ip: req.ip,
@@ -32,7 +27,7 @@ export const errorHandler = (
       },
     })
   } else {
-    Logger.error(`Unhandled Error - Message: ${err.message}`, {
+    logger.error(`Unhandled Error - Message: ${err.message}`, {
       ip: req.ip,
       method: req.method,
       url: req.originalUrl,

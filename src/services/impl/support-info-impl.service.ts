@@ -31,7 +31,7 @@ export class SupportInfoServiceImpl implements SupportInfoService {
       [SupportInfoServiceImpl.IAM_ENDPOINT]: process.env.IAM_ENDPOINT,
       [SupportInfoServiceImpl.USAGE_ENDPOINT]: process.env.USAGE_ENDPOINT,
       [SupportInfoServiceImpl.BROKER_URL]: process.env.BROKER_URL,
-      [SupportInfoServiceImpl.PC_URL]: process.env.PARTNER_CENTER_URL,
+      [SupportInfoServiceImpl.PC_URL]: process.env.PC_URL,
       [SupportInfoServiceImpl.IS_METERING_API_KEY_SET]:
         process.env.METERING_API_KEY !== '',
     }

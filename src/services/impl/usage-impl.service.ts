@@ -1,18 +1,18 @@
 import axios, { AxiosError, AxiosResponse } from 'axios'
 import { MeteringPayload } from '../../models/metering-payload.model'
 import { UsageService } from '../usage.service'
-import Logger from '../../utils/logger'
+import logger from '../../utils/logger'
 
 export class UsageServiceImpl implements UsageService {
   private usageEndpoint: string = process.env.USAGE_ENDPOINT || ''
   private iamEndpoint: string = process.env.IAM_ENDPOINT || ''
   private apiKey: string = process.env.METERING_API_KEY || ''
 
-  private static readonly USAGE_API_PATH =
-    '/v4/metering/resources/{resource_id}/usage'
   private static readonly IAM_IDENTITY_TOKEN_PATH = '/identity/token'
   private static readonly IAM_GRANT_TYPE =
-    'grant_type=urn:ibm:params:oauth:grant-type:apikey&apikey='
+    'urn:ibm:params:oauth:grant-type:apikey'
+  private static readonly USAGE_API_PATH =
+    '/v4/metering/resources/{resource_id}/usage'
 
   public async sendUsageData(
     resourceId: string,
@@ -38,13 +38,13 @@ export class UsageServiceImpl implements UsageService {
         [meteringPayload],
       )
 
-      Logger.info('Usage Metering response:', response.data)
+      logger.info('Usage Metering response:', response.data)
 
       if (response.status === 202) {
         const responseJson = response.data.resources
         responseJson.forEach((resp: any) => {
           if (resp.status && resp.status !== 201) {
-            Logger.error(
+            logger.error(
               'ALERT: Error response from Metering Usage API:',
               JSON.stringify(resp),
             )
@@ -52,7 +52,7 @@ export class UsageServiceImpl implements UsageService {
         })
         return JSON.stringify(responseJson)
       } else {
-        Logger.error(
+        logger.error(
           'Error while sending USAGE data:',
           `response status code: ${response.status}`,
           `response body: ${JSON.stringify(response.data)}`,
@@ -60,7 +60,7 @@ export class UsageServiceImpl implements UsageService {
         return JSON.stringify(response.data)
       }
     } catch (error) {
-      Logger.error('Error sending usage data:', error)
+      logger.error('Error sending usage data:', error)
       throw new Error('Error sending usage data')
     }
   }
@@ -82,8 +82,8 @@ export class UsageServiceImpl implements UsageService {
       const axiosError = error as AxiosError
 
       if (axiosError.response) {
-        Logger.error('Failed with status:', axiosError.response.status)
-        Logger.error('Failed with response:', axiosError.response.data)
+        logger.error('Failed with status:', axiosError.response.status)
+        logger.error('Failed with response:', axiosError.response.data)
       }
       throw error
     }
@@ -92,11 +92,15 @@ export class UsageServiceImpl implements UsageService {
   private async getIamAccessToken(): Promise<string> {
     const data = UsageServiceImpl.IAM_GRANT_TYPE.concat(this.apiKey)
     const response = await axios.post(
-      this.iamEndpoint.concat(UsageServiceImpl.IAM_IDENTITY_TOKEN_PATH),
+      `${this.iamEndpoint}${UsageServiceImpl.IAM_IDENTITY_TOKEN_PATH}`,
       data,
       {
         headers: {
           'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        params: {
+          grant_type: UsageServiceImpl.IAM_GRANT_TYPE,
+          apikey: this.apiKey,
         },
       },
     )

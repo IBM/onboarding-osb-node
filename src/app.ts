@@ -1,27 +1,20 @@
+import 'dotenv/config'
 import 'reflect-metadata'
 import express, { NextFunction, Request, Response } from 'express'
-import dotenv from 'dotenv'
-import Logger from './utils/logger'
+import logger from './utils/logger'
 import { errorHandler } from './middlewares/error-middleware'
 import AppDataSource from './db/data-source'
-import { AppRoutes } from './routes'
-// import { encodedSlashes } from './middlewares/encoded-slashes-middleware';
+import { AppRoutes } from './routes/routes'
 import { loggerMiddleware } from './middlewares/logger-middleware'
 import { notFoundMiddleware } from './middlewares/not-found-middleware'
 import { basicAuth } from './middlewares/authorization'
 
-dotenv.config()
-
-const appBuildNumber = process.env.APP_BUILD_NUMBER
-console.log(`App Build Number: ${appBuildNumber}`)
+logger.info(`App Build Number: ${process.env.APP_BUILD_NUMBER}`)
 
 const app = express()
 const PORT = process.env.PORT || 3000
 
 app.use(express.json())
-
-// Use encoded slashes middleware
-// app.use(encodedSlashes);
 
 // Use logger middleware
 app.use(loggerMiddleware)
@@ -49,15 +42,15 @@ app.use(errorHandler)
 const startServer = async () => {
   try {
     await AppDataSource.initialize()
-    Logger.info('Data Source has been initialized!')
+    logger.info('Data Source has been initialized!')
 
     const server = app.listen(PORT, () => {
-      Logger.info(`Server is running on http://localhost:${PORT}`)
+      logger.info(`Server is running on http://localhost:${PORT}`)
     })
 
     return server
   } catch (error) {
-    Logger.error('Data Source initialization failed:', error)
+    logger.error(`Data Source initialization failed: ${error}`)
     process.exit(1)
   }
 }
@@ -67,12 +60,12 @@ if (require.main === module) {
 }
 
 process.on('uncaughtException', error => {
-  Logger.error('Uncaught Exception:', error)
+  logger.error(`Uncaught Exception: ${error}`)
   process.exit(1)
 })
 
 process.on('unhandledRejection', (reason, promise) => {
-  Logger.error('Unhandled Rejection at:', promise, 'reason:', reason)
+  logger.error('Unhandled Rejection at:', promise, 'reason:', reason)
   process.exit(1)
 })
 
