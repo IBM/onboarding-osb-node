@@ -1,0 +1,32 @@
+# Dependency directories
+node_modules/
+
+# Directory for TypeScript output
+dist/
+build/
+
+# Editor directories and files
+.vscode/
+.idea/
+*.sublime-workspace
+*.sublime-project
+*.komodoproject
+*.komodotools
+*.[oa]
+
+# Environment variables file
+.env
+
+# Log files
+logs/
+*.log
+
+# Temporary files
+*.tmp
+
+# OS generated files
+.DS_Store
+Thumbs.db
+
+# Build files
+uploads/

@@ -1,0 +1,39 @@
+version: '3.8'
+
+services:
+  app:
+    build: .
+    ports:
+      - "3001:3001"
+    environment:
+      NODE_ENV: ${NODE_ENV}
+      DB_HOST: postgres
+      DB_PORT: ${DB_PORT}
+      DB_USER: ${DB_USER}
+      DB_USER_PWD: ${DB_USER_PWD}
+      DB_NAME: ${DB_NAME}
+      PORT: ${PORT}
+      BROKER_USERNAME: ${BROKER_USERNAME}
+      BROKER_PASSWORD: ${BROKER_PASSWORD}
+      DASHBOARD_URL: ${DASHBOARD_URL}
+      CORS_URL: ${CORS_URL}
+      TZ: ${TZ}
+    volumes:
+      - .:/usr/src/app
+      - /usr/src/app/node_modules
+    depends_on:
+      - postgres
+
+  postgres:
+    image: postgres:15
+    environment:
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_USER_PWD}
+      POSTGRES_DB: ${DB_NAME}
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+volumes:
+  postgres_data:
