@@ -5,7 +5,7 @@ export class UpdateStateRequest {
   @IsNotEmpty()
   @IsBoolean()
   @Type(() => Boolean)
-  enabled: boolean
+  enabled!: boolean
 
   @IsOptional()
   @IsString()

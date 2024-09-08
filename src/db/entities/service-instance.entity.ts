@@ -4,32 +4,32 @@ import { BaseEntity } from './base.entity'
 @Entity({ name: 'service_instance' })
 export class ServiceInstance extends BaseEntity {
   @PrimaryColumn({ name: 'instance_id' })
-  instanceId: string
+  instanceId!: string
 
   @Column({ nullable: true })
-  name: string
+  name!: string
 
   @Column({ name: 'iam_id', nullable: true })
-  iamId: string
+  iamId!: string
 
   @Column({ name: 'plan_id', nullable: true })
-  planId: string
+  planId!: string
 
   @Column({ name: 'service_id', nullable: true })
-  serviceId: string
+  serviceId!: string
 
   @Column({ nullable: true })
-  status: string
+  status!: string
 
   @Column({ default: false })
-  enabled: boolean
+  enabled!: boolean
 
   @Column({ nullable: true })
-  region: string
+  region!: string
 
   @Column({ length: 1024, nullable: true })
-  context: string
+  context!: string
 
   @Column({ nullable: true })
-  parameters: string
+  parameters!: string
 }

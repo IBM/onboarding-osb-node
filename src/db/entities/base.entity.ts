@@ -6,22 +6,22 @@ import {
 
 export abstract class BaseEntity extends TypeOrmBaseEntity {
   @PrimaryGeneratedColumn()
-  id: number
+  id!: number
 
   @Column({
     name: 'create_date',
     type: 'timestamp',
     default: () => 'CURRENT_TIMESTAMP',
   })
-  createDate: Date
+  createDate!: Date
 
   @Column({
     name: 'update_date',
     type: 'timestamp',
     default: () => 'CURRENT_TIMESTAMP',
   })
-  updateDate: Date
+  updateDate!: Date
 
   @Column({ type: 'bigint', nullable: true })
-  version: string
+  version!: string
 }

@@ -1,8 +1,6 @@
+import path from 'node:path'
 import 'dotenv/config'
-import path from 'path'
-import 'reflect-metadata'
-import { DataSource } from 'typeorm'
-import { DataSourceOptions } from 'typeorm'
+import { DataSource, DataSourceOptions } from 'typeorm'
 
 const { DB_CERT, DB_HOST, DB_PORT, DB_USER, DB_USER_PWD, DB_NAME, NODE_ENV } =
   process.env

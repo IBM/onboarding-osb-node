@@ -12,12 +12,12 @@ export class CreateServiceInstanceRequest {
   @IsNotEmpty()
   @IsString()
   @Type(() => String)
-  service_id: string
+  service_id!: string
 
   @IsNotEmpty()
   @IsString()
   @Type(() => String)
-  plan_id: string
+  plan_id!: string
 
   @IsOptional()
   @Type(() => Context)

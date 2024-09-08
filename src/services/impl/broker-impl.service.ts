@@ -1,8 +1,12 @@
+import fs from 'node:fs'
 import { promisify } from 'util'
-import fs from 'fs'
+import { plainToInstance } from 'class-transformer'
+
 import { BrokerService } from '../broker.service'
 import { Catalog } from '../../models/catalog.model'
+import { CreateServiceInstanceResponse } from '../../models/response/create-service-instance-response.model'
 import { CreateServiceInstanceRequest } from '../../models/create-service-instance-request.model'
+
 import { ServiceDefinition } from '../../models/service-definition.model'
 import { UpdateStateRequest } from '../../models/update-state-request.model'
 import { ServiceInstanceStateResponse } from '../../models/response/service-instance-state-response.model'
@@ -73,7 +77,7 @@ export class BrokerServiceImpl implements BrokerService {
     details: any,
     iamId: string,
     region: string,
-  ): Promise<any> {
+  ): Promise<CreateServiceInstanceResponse> {
     try {
       const createServiceRequest = new CreateServiceInstanceRequest(details)
       createServiceRequest.instanceId = instanceId
@@ -114,11 +118,9 @@ export class BrokerServiceImpl implements BrokerService {
         )
         const responseUrl = `${process.env.DASHBOARD_URL}${BrokerServiceImpl.PROVISION_STATUS_API}${displayName || this.catalog.getServiceDefinitions()[0].name}${BrokerServiceImpl.INSTANCE_ID}${instanceId}`
 
-        const response = {
-          [BrokerUtil.DASHBOARD_URL]: responseUrl,
-        }
-
-        return response
+        return plainToInstance(CreateServiceInstanceResponse, {
+          dashboardUrl: responseUrl,
+        })
       } else {
         logger.error(
           `Unidentified platform: ${createServiceRequest.context?.platform}`,
@@ -130,6 +132,19 @@ export class BrokerServiceImpl implements BrokerService {
     } catch (error) {
       logger.error('Error provisioning service instance:', error)
       throw new Error('Error provisioning service instance')
+    }
+  }
+
+  public async deprovision(instanceId: string): Promise<boolean> {
+    try {
+      const serviceInstanceRepository =
+        AppDataSource.getRepository(ServiceInstance)
+
+      await serviceInstanceRepository.delete({ instanceId })
+      return true
+    } catch (error) {
+      logger.error('Error deprovisioning service instance:', error)
+      throw new Error('Error deprovisioning service instance')
     }
   }
 
@@ -146,21 +161,6 @@ export class BrokerServiceImpl implements BrokerService {
     }
 
     return null
-  }
-
-  public async deprovision(instanceId: string): Promise<any> {
-    try {
-      const serviceInstanceRepository =
-        AppDataSource.getRepository(ServiceInstance)
-
-      await serviceInstanceRepository.delete({ instanceId })
-
-      const response = { description: 'Deprovisioned' }
-      return response
-    } catch (error) {
-      logger.error('Error deprovisioning service instance:', error)
-      throw new Error('Error deprovisioning service instance')
-    }
   }
 
   public async lastOperation(instanceId: string, iamId: string): Promise<any> {
