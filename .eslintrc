@@ -3,12 +3,22 @@
   "extends": [
     "eslint:recommended",
     "plugin:@typescript-eslint/recommended",
+    "plugin:import/recommended",
+    "plugin:import/typescript",
     "plugin:prettier/recommended",
   ],
+  "settings": {
+    "import/resolver": {
+      // You will also need to install and configure the TypeScript resolver
+      // See also https://github.com/import-js/eslint-import-resolver-typescript#configuration
+      "typescript": true,
+      "node": true,
+    },
+  },
   "parserOptions": {
     "ecmaVersion": 2022,
     "sourceType": "module",
-    "project": ["./tsconfig.json", "./tsconfig.tests.json"],
+    "project": ["./tsconfig.json"],
   },
   "env": {
     "node": true,
@@ -24,6 +34,13 @@
     "@typescript-eslint/ban-types": "off",
     "@typescript-eslint/no-var-requires": "off",
     "@typescript-eslint/no-empty-function": "warn",
+    "import/no-cycle": [
+      "error",
+      {
+        "maxDepth": 10,
+        "ignoreExternal": false,
+      },
+    ],
     "prettier/prettier": [
       "error",
       {
@@ -38,9 +55,12 @@
     ".next",
     ".cache",
     "package-lock.json",
+    "jest.setup.ts",
     "yarn.lock",
     "public/",
     "next-env.d.ts",
     "next.config.ts",
+    "tests/",
+    "**/*.test.ts",
   ],
 }

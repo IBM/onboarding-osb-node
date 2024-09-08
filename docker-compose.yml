@@ -2,7 +2,12 @@ version: '3.8'
 
 services:
   app:
-    build: .
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    restart: always
+    env_file:
+      - .env
     ports:
       - "3001:3001"
     environment:
@@ -13,8 +18,9 @@ services:
       DB_USER_PWD: ${DB_USER_PWD}
       DB_NAME: ${DB_NAME}
       PORT: ${PORT}
-      BROKER_USERNAME: ${BROKER_USERNAME}
-      BROKER_PASSWORD: ${BROKER_PASSWORD}
+      BROKER_BASIC_USERNAME: ${BROKER_BASIC_USERNAME}
+      BROKER_BASIC_PASSWORD: ${BROKER_BASIC_PASSWORD}
+      BROKER_BEARER_IDENTITIES: ${BROKER_BEARER_IDENTITIES}
       DASHBOARD_URL: ${DASHBOARD_URL}
       CORS_URL: ${CORS_URL}
       TZ: ${TZ}
