@@ -2,7 +2,7 @@
 
 ## Overview
 
-Every [service onboarding into the IBM Cloud Catalog](https://cloud.ibm.com/docs/sell?topic=sell-overview) is required to build a Broker application that follows the [Open Service Broker](https://github.com/openservicebrokerapi/servicebroker/blob/v2.12/spec.md) (OSB) specification.
+Every [service onboarding into the IBM Cloud Catalog](https://cloud.ibm.com/docs/sell?topic=sell-selling-clouds) is required to build a Broker application that follows the [Open Service Broker](https://github.com/openservicebrokerapi/servicebroker/blob/v2.12/spec.md) (OSB) specification.
 
 This project provides:
 
