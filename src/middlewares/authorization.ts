@@ -54,10 +54,10 @@ export class Authenticator {
   }
 
   public async init(): Promise<void> {
-    await this.fetchIdentityKeys()
+    this.IAMPublicKeys = await this.fetchIdentityKeys()
     const to = setInterval(
       async arg => {
-        await arg.fetchIdentityKeys()
+        arg.IAMPublicKeys = await arg.fetchIdentityKeys()
       },
       20 * 60 * 1000,
       this,
