@@ -49,7 +49,7 @@ Some implementers choose to submit the usage data of the service instances using
 
 ## Implementation details
 
-### Authentication
+### Authentication methods
 
 Incoming requests from IBM Cloud's Resource Controller towards your Broker can use can use either `basic` or `bearer` authentication, depend on how you configured your Broker registration with IBM Cloud and your application.
 
@@ -66,15 +66,28 @@ BROKER_BASIC_USERNAME=myUsername
 BROKER_BASIC_PASSWORD=myPassword
 ```
 
-#### Bearer
+#### Bearer JWT
 
 With this extension of the spec, the requests from IBM Cloud will use a JWT token. This JWT token will belong to an IAM ID (e.g. user or service Id) of your choosing.
 
-To configure this authentication method, ead over to Partner Center Sell, find your broker and configure your broker according to these [instructions](https://cloud.ibm.com/docs/sell?topic=sell-broker-onboard) and pick and pick `auth_scheme: bearer` and in the password field provide an API key belonging to the ID of your choosing.
+To configure this authentication method, ead over to Partner Center Sell, find your broker and configure your broker according to these [instructions](https://cloud.ibm.com/docs/sell?topic=sell-broker-onboard) and pick `auth_scheme: bearer` and in the password field provide an API key belonging to the ID of your choosing.
 
 To configure the application to accept requests from a set of IBM Cloud IAM Ids, use the environment variables:
 
 ```bash
 # BROKER_BEARER_IDENTITIES accepts a comma separated list of IAM IDs
 BROKER_BEARER_IDENTITIES=iam-ServiceId-e2b83083-cfef-40ee-8185-1f1332afaa1f
+```
+
+#### Cloud resource name JWT
+
+With this extension of the spec, the requests from IBM Cloud will use a JWT token. This JWT token will belong to your broker's cloud resource name.
+
+To configure this authentication method, ead over to Partner Center Sell, find your broker and configure your broker according to these [instructions](https://cloud.ibm.com/docs/sell?topic=sell-broker-onboard) and pick `auth_scheme: bearer-crn`.
+
+To configure the application to accept requests from a set of IBM Cloud IAM Ids, use the environment variables:
+
+```bash
+# BROKER_BEARER_IDENTITIES accepts a comma separated list of IAM IDs
+BROKER_BEARER_IDENTITIES=crn-crn:v1:bluemix:public:resource-controller::a/f71446b6474d45bf81196da45de13940::resource-broker:1f4a9711-e359-4e00-8ad3-c8bfd38446b3
 ```
