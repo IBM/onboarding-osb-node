@@ -29,7 +29,8 @@ export class BrokerRoutes {
      *
      * @throws {Error} If there is an issue with the file upload or catalog import process
      */
-    router.put("/v2/catalog", upload.single("file"), controller.importCatalog);
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    router.put("/v2/catalog", upload.single("file") as any, controller.importCatalog);
 
     /**
      * GET /v2/catalog

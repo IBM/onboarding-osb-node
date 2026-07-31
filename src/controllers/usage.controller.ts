@@ -7,7 +7,7 @@ export class UsageController {
 
   public sendUsageData: RequestHandler = async (req, res, next): Promise<void> => {
     try {
-      const resourceId = req.params.resourceId;
+      const resourceId = req.params.resourceId as string;
       const meteringPayload = req.body;
 
       logger.info(

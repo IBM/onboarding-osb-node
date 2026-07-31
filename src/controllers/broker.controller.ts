@@ -34,7 +34,7 @@ export class BrokerController {
 
   public provision: RequestHandler = async (req, res, next) => {
     try {
-      const instanceId = req.params.instanceId ?? "";
+      const instanceId = (req.params.instanceId as string) ?? "";
       const acceptsIncomplete = req.query.accepts_incomplete === "true";
 
       logger.info(
@@ -68,7 +68,7 @@ export class BrokerController {
 
   public updateState: RequestHandler = async (req, res, next) => {
     try {
-      const instanceId = req.params.instanceId;
+      const instanceId = req.params.instanceId as string;
 
       logger.info(
         `Update instance state request received: PUT /bluemix_v1/service_instances/${instanceId} request body: ${JSON.stringify(req.body)}`,
@@ -91,7 +91,7 @@ export class BrokerController {
 
   public getState: RequestHandler = async (req, res, next) => {
     try {
-      const instanceId = req.params.instanceId;
+      const instanceId = req.params.instanceId as string;
 
       logger.info(
         `Get instance state request received: GET /bluemix_v1/service_instances/${instanceId}`,
@@ -154,7 +154,7 @@ export class BrokerController {
 
   public deprovision: RequestHandler = async (req, res, next) => {
     try {
-      const instanceId = req.params.instanceId;
+      const instanceId = req.params.instanceId as string;
       const acceptsIncomplete = req.query.accepts_incomplete === "true";
       const planId = req.query.plan_id as string;
       const serviceId = req.query.service_id as string;
@@ -205,7 +205,7 @@ export class BrokerController {
 
   public fetchLastOperation: RequestHandler = async (req, res, next) => {
     try {
-      const instanceId = req.params.instanceId;
+      const instanceId = req.params.instanceId as string;
       const operation = req.query.operation as string | undefined;
       const planId = req.query.plan_id as string;
       const serviceId = req.query.service_id as string;
