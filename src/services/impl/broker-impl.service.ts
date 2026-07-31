@@ -1,5 +1,6 @@
 import fs from "node:fs";
 import path from "node:path";
+import { fileURLToPath } from "node:url";
 import { promisify } from "util";
 import { plainToInstance } from "class-transformer";
 import { Repository } from "typeorm";
@@ -20,6 +21,7 @@ import { ServiceInstanceStatus } from "../../enums/service-instance-status.js";
 import { OperationState } from "../../enums/operation-state.js";
 import AppDataSource from "../../db/data-source.js";
 
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const CATALOG_PATH = path.join(__dirname, "../../assets/data/catalog.json");
 
 export class BrokerServiceImpl implements BrokerService {

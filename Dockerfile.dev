@@ -4,8 +4,8 @@ FROM node:24
 # Create and change to the app directory
 WORKDIR /usr/src/app
 
-# Copy the package.json and pnpm-lock.yaml files to the working directory
-COPY package.json pnpm-lock.yaml ./
+# Copy the package.json, lockfile, and workspace config (contains build approvals)
+COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
 
 # Install dependencies
 RUN corepack enable pnpm && pnpm install --frozen-lockfile

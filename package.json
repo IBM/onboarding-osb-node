@@ -14,7 +14,8 @@
     "clean": "rm -rf dist",
     "build": "pnpm clean && tsc",
     "start": "pnpm clean && tsc && node dist/src/app.js",
-    "start:dev": "nodemon -L src/app.ts",
+    "start:dev": "tsx watch src/app.ts",
+    "dev": "tsx watch src/app.ts",
     "watch": "tsc -w",
     "test": "vitest run",
     "test:watch": "vitest",
@@ -25,8 +26,8 @@
     "lint-fix": "oxlint src --fix",
     "format": "oxfmt --write \"src/**/*.ts\" \"tests/**/*.ts\"",
     "format:check": "oxfmt --check \"src/**/*.ts\" \"tests/**/*.ts\"",
-    "prepare": "husky install",
-    "typeorm": "ts-node ./node_modules/typeorm/cli.js",
+    "prepare": "node -e \"if(require('fs').existsSync('.git')) { require('child_process').execSync('husky install', {stdio:'inherit'}) }\"",
+    "typeorm": "tsx ./node_modules/typeorm/cli.js",
     "migrate:generate": "pnpm typeorm migration:generate -d ./src/db/data-source.ts",
     "migrate": "pnpm typeorm migration:run -d ./src/db/data-source.ts"
   },
@@ -60,11 +61,10 @@
     "concurrently": "^8.2.2",
     "husky": "9.0.11",
     "lint-staged": "^15.2.5",
-    "nodemon": "^3.1.0",
     "oxfmt": "^0.61.0",
     "oxlint": "^1.76.0",
     "supertest": "^7.2.0",
-    "ts-node": "^10.9.2",
+    "tsx": "^4.19.0",
     "typescript": "^7.0.2",
     "vitest": "^4.1.0"
   },
@@ -78,6 +78,6 @@
     ]
   },
   "engines": {
-    "node": ">=20.0.0"
+    "node": ">=24.0.0"
   }
 }

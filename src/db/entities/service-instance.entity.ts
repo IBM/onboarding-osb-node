@@ -3,33 +3,33 @@ import { BaseEntity } from "./base.entity.js";
 
 @Entity({ name: "service_instance" })
 export class ServiceInstance extends BaseEntity {
-  @PrimaryColumn({ name: "instance_id" })
+  @PrimaryColumn({ name: "instance_id", type: "varchar" })
   instanceId!: string;
 
-  @Column({ nullable: true })
+  @Column({ type: "varchar", nullable: true })
   name!: string;
 
-  @Column({ name: "iam_id", nullable: true })
+  @Column({ name: "iam_id", type: "varchar", nullable: true })
   iamId!: string;
 
-  @Column({ name: "plan_id", nullable: true })
+  @Column({ name: "plan_id", type: "varchar", nullable: true })
   planId!: string;
 
-  @Column({ name: "service_id", nullable: true })
+  @Column({ name: "service_id", type: "varchar", nullable: true })
   serviceId!: string;
 
-  @Column({ nullable: true })
+  @Column({ type: "varchar", nullable: true })
   status!: string;
 
-  @Column({ default: false })
+  @Column({ type: "boolean", default: false })
   enabled!: boolean;
 
-  @Column({ nullable: true })
+  @Column({ type: "varchar", nullable: true })
   region!: string;
 
-  @Column({ length: 1024, nullable: true })
+  @Column({ type: "varchar", length: 1024, nullable: true })
   context!: string;
 
-  @Column({ nullable: true })
+  @Column({ type: "varchar", nullable: true })
   parameters!: string;
 }

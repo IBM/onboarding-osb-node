@@ -170,11 +170,11 @@ export class BrokerController {
         BrokerUtil.getIamId(req) ?? "",
       );
 
-      logger.info(
-        `Deprovision Service Instance Response status: 200, body: ${JSON.stringify(response)}`,
-      );
+      const status = acceptsIncomplete ? 202 : 200;
 
-      res.status(200).json(response);
+      logger.info(`Deprovision Service Instance Response status: ${status}`);
+
+      res.sendStatus(status);
     } catch (error) {
       logger.error(`Error deprovisioning service instance: ${error}`);
       next(error);

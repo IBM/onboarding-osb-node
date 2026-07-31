@@ -1,6 +1,9 @@
 import path from "node:path";
+import { fileURLToPath } from "node:url";
 import "dotenv/config";
 import { DataSource, DataSourceOptions } from "typeorm";
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 const { DB_CERT, DB_HOST, DB_PORT, DB_USER, DB_USER_PWD, DB_NAME, NODE_ENV } = process.env;
 

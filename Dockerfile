@@ -2,7 +2,7 @@
 FROM node:24 AS builder
 
 WORKDIR /usr/src/app
-COPY package.json pnpm-lock.yaml tsconfig.json ./
+COPY package.json pnpm-lock.yaml pnpm-workspace.yaml tsconfig.json ./
 RUN corepack enable pnpm && pnpm install --frozen-lockfile
 COPY src src
 RUN pnpm build
