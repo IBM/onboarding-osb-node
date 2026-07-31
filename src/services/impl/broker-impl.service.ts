@@ -1,6 +1,8 @@
 import fs from 'node:fs'
+import path from 'node:path'
 import { promisify } from 'util'
 import { plainToInstance } from 'class-transformer'
+import { Repository } from 'typeorm'
 
 import { BrokerService } from '../broker.service'
 import { Catalog } from '../../models/catalog.model'
@@ -18,6 +20,8 @@ import { ServiceInstanceStatus } from '../../enums/service-instance-status'
 import { OperationState } from '../../enums/operation-state'
 import AppDataSource from '../../db/data-source'
 
+const CATALOG_PATH = path.join(__dirname, '../../assets/data/catalog.json')
+
 export class BrokerServiceImpl implements BrokerService {
   dashboardUrl: string = process.env.DASHBOARD_URL || 'http://localhost:8080'
   private catalog: Catalog
@@ -26,15 +30,56 @@ export class BrokerServiceImpl implements BrokerService {
   private static readonly PROVISION_STATUS_API = '/provision_status?type='
   private static readonly INSTANCE_ID = '&instance_id='
 
-  constructor() {
-    this.catalog = new Catalog([])
+  constructor(
+    private readonly serviceInstanceRepo: Repository<ServiceInstance> = AppDataSource.getRepository(
+      ServiceInstance,
+    ),
+  ) {
+    this.catalog = BrokerServiceImpl.loadCatalogFromDisk()
+  }
+
+  private static loadCatalogFromDisk(): Catalog {
+    try {
+      const raw = fs.readFileSync(CATALOG_PATH, { encoding: 'utf8' })
+      const catalogJson = JSON.parse(raw)
+      if (!catalogJson.services || !Array.isArray(catalogJson.services)) {
+        logger.warn(
+          'catalog.json has no services array — starting with empty catalog',
+        )
+        return new Catalog([])
+      }
+      const serviceDefinitions = catalogJson.services.map(
+        (service: any) =>
+          new ServiceDefinition(
+            service.id,
+            service.name,
+            service.description,
+            service.plans,
+            service.bindable,
+            service.plan_updateable,
+            service.tags,
+            service.metadata,
+            service.requires,
+            service.dashboard_client,
+          ),
+      )
+      logger.info(
+        `Loaded catalog from disk: ${serviceDefinitions.length} service(s)`,
+      )
+      return new Catalog(serviceDefinitions)
+    } catch (err) {
+      logger.warn(
+        `Could not load catalog.json from disk, starting with empty catalog: ${err}`,
+      )
+      return new Catalog([])
+    }
   }
 
   public async importCatalog(file: Express.Multer.File): Promise<any> {
-    const readFile = promisify(fs.readFile)
-
     try {
-      const data = await readFile(file.path, { encoding: 'utf8' })
+      const data = file.buffer
+        ? file.buffer.toString('utf8')
+        : await promisify(fs.readFile)(file.path, { encoding: 'utf8' })
       const catalogJson = JSON.parse(data)
 
       if (!catalogJson.services || !Array.isArray(catalogJson.services)) {
@@ -78,74 +123,67 @@ export class BrokerServiceImpl implements BrokerService {
     iamId: string,
     region: string,
   ): Promise<CreateServiceInstanceResponse> {
-    try {
-      const createServiceRequest = new CreateServiceInstanceRequest(details)
-      createServiceRequest.instanceId = instanceId
+    const createServiceRequest = new CreateServiceInstanceRequest(details)
+    createServiceRequest.instanceId = instanceId
 
-      if (
-        createServiceRequest.context &&
-        createServiceRequest.context.platform === BrokerUtil.IBM_CLOUD
-      ) {
-        const plan = CatalogUtil.getPlan(
-          this.catalog,
-          createServiceRequest.service_id,
-          createServiceRequest.plan_id,
-        )
+    if (
+      createServiceRequest.context &&
+      createServiceRequest.context.platform === BrokerUtil.IBM_CLOUD
+    ) {
+      const plan = CatalogUtil.getPlan(
+        this.catalog,
+        createServiceRequest.service_id,
+        createServiceRequest.plan_id,
+      )
 
-        if (!plan) {
-          logger.error(
-            `Plan id:${createServiceRequest.plan_id} does not belong to this service: ${createServiceRequest.service_id}`,
-          )
-          throw new Error(`Invalid plan id: ${createServiceRequest.plan_id}`)
-        }
-
-        const serviceInstance = this.getServiceInstanceEntity(
-          createServiceRequest,
-          iamId,
-          region,
-        )
-
-        const serviceInstanceRepository =
-          AppDataSource.getRepository(ServiceInstance)
-        await serviceInstanceRepository.save(serviceInstance)
-
-        logger.info(
-          `Service Instance created: instanceId: ${instanceId} status: ${serviceInstance.status} planId: ${plan.id}`,
-        )
-
-        const displayName = this.getServiceMetaDataByAttribute(
-          BrokerServiceImpl.DISPLAY_NAME,
-        )
-        const responseUrl = `${process.env.DASHBOARD_URL}${BrokerServiceImpl.PROVISION_STATUS_API}${displayName || this.catalog.getServiceDefinitions()[0].name}${BrokerServiceImpl.INSTANCE_ID}${instanceId}`
-
-        return plainToInstance(CreateServiceInstanceResponse, {
-          dashboardUrl: responseUrl,
-        })
-      } else {
+      if (!plan) {
         logger.error(
-          `Unidentified platform: ${createServiceRequest.context?.platform}`,
+          `Plan id:${createServiceRequest.plan_id} does not belong to this service: ${createServiceRequest.service_id}`,
         )
-        throw new Error(
-          `Invalid platform: ${createServiceRequest.context?.platform}`,
-        )
+        throw new Error(`Invalid plan id: ${createServiceRequest.plan_id}`)
       }
-    } catch (error) {
-      logger.error('Error provisioning service instance:', error)
-      throw new Error('Error provisioning service instance')
+
+      const serviceInstance = this.getServiceInstanceEntity(
+        createServiceRequest,
+        iamId,
+        region,
+      )
+
+      await this.serviceInstanceRepo.save(serviceInstance)
+
+      logger.info(
+        `Service Instance created: instanceId: ${instanceId} status: ${serviceInstance.status} planId: ${plan.id}`,
+      )
+
+      const displayName = this.getServiceMetaDataByAttribute(
+        BrokerServiceImpl.DISPLAY_NAME,
+      )
+      const responseUrl = `${process.env.DASHBOARD_URL}${BrokerServiceImpl.PROVISION_STATUS_API}${displayName || this.catalog.getServiceDefinitions()[0].name}${BrokerServiceImpl.INSTANCE_ID}${instanceId}`
+
+      return plainToInstance(CreateServiceInstanceResponse, {
+        dashboardUrl: responseUrl,
+      })
+    } else {
+      logger.error(
+        `Unidentified platform: ${createServiceRequest.context?.platform}`,
+      )
+      throw new Error(
+        `Invalid platform: ${createServiceRequest.context?.platform}`,
+      )
     }
   }
 
-  public async deprovision(instanceId: string): Promise<boolean> {
-    try {
-      const serviceInstanceRepository =
-        AppDataSource.getRepository(ServiceInstance)
-
-      await serviceInstanceRepository.delete({ instanceId })
-      return true
-    } catch (error) {
-      logger.error('Error deprovisioning service instance:', error)
-      throw new Error('Error deprovisioning service instance')
-    }
+  public async deprovision(
+    instanceId: string,
+    planId: string,
+    serviceId: string,
+    iamId: string,
+  ): Promise<boolean> {
+    logger.info(
+      `Deprovisioning instance: ${instanceId} planId: ${planId} serviceId: ${serviceId} iamId: ${iamId}`,
+    )
+    await this.serviceInstanceRepo.delete({ instanceId })
+    return true
   }
 
   private getServiceMetaDataByAttribute(attribute: string): string | null {
@@ -164,18 +202,12 @@ export class BrokerServiceImpl implements BrokerService {
   }
 
   public async lastOperation(instanceId: string, iamId: string): Promise<any> {
-    try {
-      logger.info(
-        `last_operation Response status: 200, body: ${instanceId} ${iamId}`,
-      )
+    logger.info(
+      `last_operation Response status: 200, body: ${instanceId} ${iamId}`,
+    )
 
-      const response = {
-        [BrokerServiceImpl.INSTANCE_STATE]: OperationState.SUCCEEDED,
-      }
-      return response
-    } catch (error) {
-      logger.error('Error fetching last operation:', error)
-      throw new Error('Error fetching last operation')
+    return {
+      [BrokerServiceImpl.INSTANCE_STATE]: OperationState.SUCCEEDED,
     }
   }
 
@@ -185,36 +217,27 @@ export class BrokerServiceImpl implements BrokerService {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     iamId: string,
   ): Promise<any> {
-    try {
-      const updateStateRequest: UpdateStateRequest = JSON.parse(
-        JSON.stringify(json),
-      )
+    const updateStateRequest = plainToInstance(
+      UpdateStateRequest,
+      json as Record<string, unknown>,
+    )
 
-      const response: ServiceInstanceStateResponse = {
-        active: updateStateRequest.enabled || false,
-        enabled: updateStateRequest.enabled || false,
-      }
-
-      return response
-    } catch (error) {
-      logger.error('Error updating service instance state:', error)
-      throw new Error('Error updating service instance state')
+    const response: ServiceInstanceStateResponse = {
+      active: updateStateRequest.enabled || false,
+      enabled: updateStateRequest.enabled || false,
     }
+
+    return response
   }
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   public async getState(instanceId: string, iamId: string): Promise<any> {
-    try {
-      const response: ServiceInstanceStateResponse = {
-        active: false,
-        enabled: false,
-      }
-
-      return response
-    } catch (error) {
-      logger.error('Error getting instance state:', error)
-      throw new Error('Error getting instance state')
+    const response: ServiceInstanceStateResponse = {
+      active: false,
+      enabled: false,
     }
+
+    return response
   }
 
   private getServiceInstanceEntity(

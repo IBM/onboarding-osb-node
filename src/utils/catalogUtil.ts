@@ -4,10 +4,6 @@ import { Catalog } from '../models/catalog.model'
 export class CatalogUtil {
   static COSTS = 'costs'
   static METERING_UNIT = 'meteringUnit'
-  static CREDIT_PLAN = 'virtualcoursecredit-subscription-plan'
-  static BASE_PLAN = 'computinglab-base-plan'
-  static PREMIUM_PLAN = 'computinglab-premium-plan'
-  static LITE_PLAN = 'lite'
 
   public static getPlan(
     catalog: Catalog,

@@ -22,7 +22,6 @@ services:
       BROKER_BASIC_PASSWORD: ${BROKER_BASIC_PASSWORD}
       BROKER_BEARER_IDENTITIES: ${BROKER_BEARER_IDENTITIES}
       DASHBOARD_URL: ${DASHBOARD_URL}
-      CORS_URL: ${CORS_URL}
       TZ: ${TZ}
     volumes:
       - .:/usr/src/app

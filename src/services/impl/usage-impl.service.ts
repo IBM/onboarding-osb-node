@@ -90,17 +90,16 @@ export class UsageServiceImpl implements UsageService {
   }
 
   private async getIamAccessToken(): Promise<string> {
-    const data = UsageServiceImpl.IAM_GRANT_TYPE.concat(this.apiKey)
+    const body = new URLSearchParams({
+      grant_type: UsageServiceImpl.IAM_GRANT_TYPE,
+      apikey: this.apiKey,
+    })
     const response = await axios.post(
       `${this.iamEndpoint}${UsageServiceImpl.IAM_IDENTITY_TOKEN_PATH}`,
-      data,
+      body,
       {
         headers: {
           'Content-Type': 'application/x-www-form-urlencoded',
-        },
-        params: {
-          grant_type: UsageServiceImpl.IAM_GRANT_TYPE,
-          apikey: this.apiKey,
         },
       },
     )

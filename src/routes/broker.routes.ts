@@ -2,14 +2,17 @@ import { Router } from 'express'
 import multer from 'multer'
 import { BrokerController } from '../controllers/broker.controller'
 import { BrokerServiceImpl } from '../services/impl/broker-impl.service'
+import { validateBody } from '../middlewares/validate-body'
+import { CreateServiceInstanceRequest } from '../models/create-service-instance-request.model'
+import { UpdateStateRequest } from '../models/update-state-request.model'
+
+const service = new BrokerServiceImpl()
+const controller = new BrokerController(service)
+const upload = multer({ storage: multer.memoryStorage() })
 
 export class BrokerRoutes {
   static get routes(): Router {
     const router = Router()
-
-    const service = new BrokerServiceImpl()
-    const controller = new BrokerController(service)
-    const upload = multer({ dest: 'uploads/' })
 
     /**
      * PUT /v2/catalog
@@ -54,7 +57,11 @@ export class BrokerRoutes {
      * @returns {Promise<void>}
      * @throws {Error} In case of error
      */
-    router.put('/v2/service_instances/:instanceId', controller.provision)
+    router.put(
+      '/v2/service_instances/:instanceId',
+      validateBody(CreateServiceInstanceRequest),
+      controller.provision,
+    )
 
     /**
      * IBM Cloud Enablement Extension: enable service instance
@@ -62,6 +69,7 @@ export class BrokerRoutes {
      */
     router.put(
       '/bluemix_v1/service_instances/:instanceId',
+      validateBody(UpdateStateRequest),
       controller.updateState,
     )
 

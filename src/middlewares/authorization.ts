@@ -5,7 +5,7 @@ import axios from 'axios'
 
 import logger from '../utils/logger'
 
-const KEYS_ENDPOINT = `${process.env.IAM_ENDPOINT as string}/identity/keys`
+const KEY_REFRESH_INTERVAL_MS = 20 * 60 * 1000
 
 interface IAMIdentityKeysResponse {
   keys: JsonWebKey[]
@@ -44,8 +44,9 @@ export class Authenticator {
   }
 
   private async fetchIdentityKeys(): Promise<JsonWebKey[]> {
+    const keysEndpoint = `${process.env.IAM_ENDPOINT}/identity/keys`
     try {
-      const resp = await axios.get<IAMIdentityKeysResponse>(KEYS_ENDPOINT)
+      const resp = await axios.get<IAMIdentityKeysResponse>(keysEndpoint)
       return resp.data.keys
     } catch (e) {
       logger.error(`Error fetching IAM Identity keys ${e}`)
@@ -59,11 +60,18 @@ export class Authenticator {
       async arg => {
         arg.IAMPublicKeys = await arg.fetchIdentityKeys()
       },
-      20 * 60 * 1000,
+      KEY_REFRESH_INTERVAL_MS,
       this,
     )
     to.unref()
     this.intervalHandle = to
+  }
+
+  public destroy(): void {
+    if (this.intervalHandle) {
+      clearInterval(this.intervalHandle)
+      this.intervalHandle = undefined
+    }
   }
 
   private verifyJWT(credential: string): string | jwt.JwtPayload {

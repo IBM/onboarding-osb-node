@@ -1,6 +1,6 @@
 import 'dotenv/config'
 import 'reflect-metadata'
-import express, { NextFunction, Request, Response } from 'express'
+import express, { Request, Response } from 'express'
 
 import AppDataSource from './db/data-source'
 import logger from './utils/logger'
@@ -57,11 +57,6 @@ export const startServer = async () => {
 
     app.use(AppRoutes.routes)
 
-    app.use((req: Request, res: Response, next: NextFunction) => {
-      res.setHeader('Content-Type', 'application/json')
-      next()
-    })
-
     // Catch-all for unmatched routes
     app.use('*', notFoundMiddleware)
 
@@ -72,7 +67,6 @@ export const startServer = async () => {
       logger.info(`Server is running on http://localhost:${PORT}`)
     })
   } catch (error) {
-    console.error(error)
     logger.error(`Starting application failed: ${error}`)
     process.exit(1)
   }

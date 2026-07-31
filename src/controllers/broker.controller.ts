@@ -64,7 +64,7 @@ export class BrokerController {
         `Create Service Instance Response status: 201, body: ${JSON.stringify(response)}`,
       )
 
-      res.status(200).json(response)
+      res.status(201).json(response)
     } catch (error) {
       logger.error(`Error provisioning service instance: ${error}`)
       next(error)
@@ -146,11 +146,11 @@ export class BrokerController {
     try {
       const instanceId = req.params.instanceId
       const bindingId = req.params.bindingId
-      const plan_id = req.query?.plan_id || ''
-      const service_id = req.query?.service_id || ''
+      const planId = req.query?.plan_id || ''
+      const serviceId = req.query?.service_id || ''
 
       logger.info(
-        `Unbind request received: DELETE /v2/service_instances/${instanceId}/service_bindings/${bindingId}?plan_id=${plan_id}&service_id=${service_id}`,
+        `Unbind request received: DELETE /v2/service_instances/${instanceId}/service_bindings/${bindingId}?plan_id=${planId}&service_id=${serviceId}`,
       )
 
       const response = {}
@@ -247,8 +247,11 @@ export class BrokerController {
 
   public getProvisionStatus: RequestHandler = async (req, res, next) => {
     try {
-      const instance_id = req.query.instance_id as string
-      const type = req.query.type as string
+      const instanceId = String(req.query.instance_id ?? '')
+      const type = String(req.query.type ?? '')
+
+      const safeInstanceId = BrokerController.escapeHtml(instanceId)
+      const safeType = BrokerController.escapeHtml(type)
 
       const homepage = `
         <html>
@@ -279,12 +282,12 @@ export class BrokerController {
             <div class="flex-wrapper">
               <div class="flex-row">
                 <div class="strong-div"><strong>Type</strong></div>
-                <div>${type}</div>
+                <div>${safeType}</div>
               </div>
               <hr class="hr-short"/>
               <div class="flex-row">
                 <div class="strong-div"><strong>Instance ID</strong></div>
-                <div>${instance_id}</div>
+                <div>${safeInstanceId}</div>
               </div>
             </div>
           </body>
@@ -296,5 +299,14 @@ export class BrokerController {
       logger.error(`Error generating provision status page: ${error}`)
       next(error)
     }
+  }
+
+  private static escapeHtml(value: string): string {
+    return value
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#39;')
   }
 }
