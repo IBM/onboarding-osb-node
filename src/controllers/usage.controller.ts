@@ -9,11 +9,6 @@ export class UsageController {
     try {
       const resourceId = req.params.resourceId as string;
       const meteringPayload = req.body;
-
-      logger.info(
-        `Request received: POST /usage request with resourceId: ${resourceId} payload: ${JSON.stringify(meteringPayload)}`,
-      );
-
       const response = await this.usageService.sendUsageData(resourceId, meteringPayload);
       res.status(200).json(response);
     } catch (error) {

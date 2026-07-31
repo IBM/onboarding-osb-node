@@ -24,7 +24,6 @@ export class BrokerController {
   public getCatalog: RequestHandler = async (_req, res, next) => {
     try {
       const response = await this.brokerService.getCatalog();
-      logger.info("Request completed: GET /v2/catalog");
       res.status(200).json(response);
     } catch (error) {
       logger.error(`Error retrieving catalog: ${error}`);
@@ -36,10 +35,6 @@ export class BrokerController {
     try {
       const instanceId = (req.params.instanceId as string) ?? "";
       const acceptsIncomplete = req.query.accepts_incomplete === "true";
-
-      logger.info(
-        `Create Service Instance request received: PUT /v2/service_instances/${instanceId}?accepts_incomplete=${acceptsIncomplete} request body: ${JSON.stringify(req.body)}`,
-      );
 
       const iamId = BrokerUtil.getIamId(req) ?? "";
       const bluemixRegion = BrokerUtil.getHeaderValue(req, BrokerUtil.BLUEMIX_REGION_HEADER) ?? "";
@@ -55,10 +50,6 @@ export class BrokerController {
         bluemixRegion,
       );
 
-      logger.info(
-        `Create Service Instance Response status: 201, body: ${JSON.stringify(response)}`,
-      );
-
       res.status(201).json(response);
     } catch (error) {
       logger.error(`Error provisioning service instance: ${error}`);
@@ -70,21 +61,15 @@ export class BrokerController {
     try {
       const instanceId = req.params.instanceId as string;
 
-      logger.info(
-        `Update instance state request received: PUT /bluemix_v1/service_instances/${instanceId} request body: ${JSON.stringify(req.body)}`,
-      );
-
       const response = await this.brokerService.updateState(
         instanceId,
         req.body,
         BrokerUtil.getIamId(req) ?? "",
       );
 
-      logger.info(`Update instance state response status: 200, body: ${JSON.stringify(response)}`);
-
       res.status(200).json(response);
     } catch (error) {
-      logger.error("Error updating service instance:", error);
+      logger.error(`Error updating service instance: ${error}`);
       next(error);
     }
   };
@@ -93,16 +78,10 @@ export class BrokerController {
     try {
       const instanceId = req.params.instanceId as string;
 
-      logger.info(
-        `Get instance state request received: GET /bluemix_v1/service_instances/${instanceId}`,
-      );
-
       const response = await this.brokerService.getState(
         instanceId,
         BrokerUtil.getIamId(req) ?? "",
       );
-
-      logger.info(`Get instance state response status: 200, body: ${JSON.stringify(response)}`);
 
       res.status(200).json(response);
     } catch (error) {
@@ -113,17 +92,7 @@ export class BrokerController {
 
   public bind: RequestHandler = async (req, res, next) => {
     try {
-      const instanceId = req.params.instanceId;
-      const bindingId = req.params.bindingId;
-
-      logger.info(
-        `Bind request received: PUT /v2/service_instances/${instanceId}/service_bindings/${bindingId} request body: ${JSON.stringify(req.body)}`,
-      );
-
       const response = {};
-
-      logger.info(`Bind response status: 201, body: ${JSON.stringify(response)}`);
-
       res.status(201).json(response);
     } catch (error) {
       logger.error(`Error binding service: ${error}`);
@@ -133,18 +102,7 @@ export class BrokerController {
 
   public unbind: RequestHandler = async (req, res, next) => {
     try {
-      const instanceId = req.params.instanceId;
-      const bindingId = req.params.bindingId;
-      const planId = req.query?.plan_id || "";
-      const serviceId = req.query?.service_id || "";
-
-      logger.info(
-        `Unbind request received: DELETE /v2/service_instances/${instanceId}/service_bindings/${bindingId}?plan_id=${planId}&service_id=${serviceId}`,
-      );
-
       const response = {};
-      logger.info(`Unbind response status: 200, body: ${JSON.stringify(response)}`);
-
       res.status(200).json(response);
     } catch (error) {
       logger.error(`Error unbinding service: ${error}`);
@@ -159,22 +117,14 @@ export class BrokerController {
       const planId = req.query.plan_id as string;
       const serviceId = req.query.service_id as string;
 
-      logger.info(
-        `Deprovision Service Instance request received: DELETE /v2/service_instances/${instanceId}?accepts_incomplete=${acceptsIncomplete}&plan_id=${planId}&service_id=${serviceId}`,
-      );
-
-      const response = await this.brokerService.deprovision(
+      await this.brokerService.deprovision(
         instanceId,
         planId,
         serviceId,
         BrokerUtil.getIamId(req) ?? "",
       );
 
-      const status = acceptsIncomplete ? 202 : 200;
-
-      logger.info(`Deprovision Service Instance Response status: ${status}`);
-
-      res.sendStatus(status);
+      res.sendStatus(acceptsIncomplete ? 202 : 200);
     } catch (error) {
       logger.error(`Error deprovisioning service instance: ${error}`);
       next(error);
@@ -183,19 +133,7 @@ export class BrokerController {
 
   public update: RequestHandler = async (req, res, next) => {
     try {
-      const instanceId = req.params.instanceId;
-      const acceptsIncomplete = req.query.accepts_incomplete === "true";
-
-      logger.info(
-        `Update Service Instance request received: PATCH /v2/service_instances/${instanceId}?accepts_incomplete=${acceptsIncomplete} request body: ${JSON.stringify(req.body)}`,
-      );
-
       const response = {};
-
-      logger.info(
-        `Update Service Instance Response status: 200, body: ${JSON.stringify(response)}`,
-      );
-
       res.status(200).json(response);
     } catch (error) {
       logger.error(`Error updating service instance: ${error}`);
@@ -206,20 +144,8 @@ export class BrokerController {
   public fetchLastOperation: RequestHandler = async (req, res, next) => {
     try {
       const instanceId = req.params.instanceId as string;
-      const operation = req.query.operation as string | undefined;
-      const planId = req.query.plan_id as string;
-      const serviceId = req.query.service_id as string;
-
-      logger.info(
-        `Get last_operation request received: GET /v2/service_instances/${instanceId}?operation=${operation}&plan_id=${planId}&service_id=${serviceId}`,
-      );
-
       const originatingIdentity = BrokerUtil.getIamId(req) ?? "";
-
       const response = await this.brokerService.lastOperation(instanceId, originatingIdentity);
-
-      logger.info(`last_operation Response status: 200, body: ${JSON.stringify(response)}`);
-
       res.status(200).json(response);
     } catch (error) {
       logger.error(`Error fetching last operation: ${error}`);

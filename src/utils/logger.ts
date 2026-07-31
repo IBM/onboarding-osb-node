@@ -1,4 +1,4 @@
-import winston from "winston";
+import winston, { type Logform } from "winston";
 
 const levels = {
   error: 0,
@@ -24,8 +24,16 @@ winston.addColors(colors);
 
 const format = winston.format.combine(
   winston.format.timestamp({ format: "YYYY-MM-DD HH:mm:ss:ms" }),
-  ...(isDevelopment ? [winston.format.colorize({ all: true })] : []),
-  winston.format.printf((info) => `${info.timestamp} ${info.level}: ${info.message}`),
+  ...(isDevelopment
+    ? [
+        winston.format.colorize({ all: true }),
+        winston.format.printf((info: Logform.TransformableInfo) => {
+          const { timestamp, level, message, ...rest } = info as Record<string, unknown>;
+          const extra = Object.keys(rest).length ? " " + JSON.stringify(rest) : "";
+          return `${timestamp} ${level}: ${message}${extra}`;
+        }),
+      ]
+    : [winston.format.json()]),
 );
 
 const transports = [new winston.transports.Console()];
