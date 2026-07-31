@@ -1,10 +1,10 @@
-import { ErrorRequestHandler } from 'express'
-import BaseError from '../errors/base-error'
-import logger from '../utils/logger'
+import { ErrorRequestHandler } from "express";
+import BaseError from "../errors/base-error.js";
+import logger from "../utils/logger.js";
 
 export const errorHandler: ErrorRequestHandler = (err, req, res, next) => {
   if (res.headersSent) {
-    return next(err)
+    return next(err);
   }
 
   if (err instanceof BaseError) {
@@ -15,7 +15,7 @@ export const errorHandler: ErrorRequestHandler = (err, req, res, next) => {
         method: req.method,
         url: req.originalUrl,
       },
-    )
+    );
 
     res.status(err.statusCode).json({
       error: {
@@ -25,24 +25,21 @@ export const errorHandler: ErrorRequestHandler = (err, req, res, next) => {
         ...(err.code && { code: err.code }),
         ...(err.params && { params: err.params }),
       },
-    })
+    });
   } else {
     logger.error(`Unhandled Error - Message: ${err.message}`, {
       ip: req.ip,
       method: req.method,
       url: req.originalUrl,
-      stack: process.env.NODE_ENV === 'development' ? err.stack : undefined,
-    })
+      stack: process.env.NODE_ENV === "development" ? err.stack : undefined,
+    });
 
     res.status(500).json({
       error: {
         status: 500,
-        message: 'Internal Server Error',
-        details:
-          process.env.NODE_ENV === 'development'
-            ? err.message
-            : 'A server error occurred',
+        message: "Internal Server Error",
+        details: process.env.NODE_ENV === "development" ? err.message : "A server error occurred",
       },
-    })
+    });
   }
-}
+};

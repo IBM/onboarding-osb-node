@@ -1,24 +1,30 @@
 {
   "compilerOptions": {
-    "target": "esnext",
-    "module": "commonjs",
-    "lib": ["ES2022"],
+    // Node 24 ships V8 13.x which has full ES2024 support
+    "target": "ES2024",
+    "lib": ["ES2024"],
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext",
     "outDir": "./dist",
+
+    // TypeORM / class-validator require these two
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
+
+    "strict": true,
+    "noImplicitAny": true,
     "forceConsistentCasingInFileNames": true,
     "esModuleInterop": true,
-    "noImplicitAny": true,
     "skipLibCheck": true,
-    "strict": true,
+
+    // Preserve source paths in .d.ts output
+    "declaration": false,
+    "declarationMap": false,
+    "sourceMap": false,
+
+    // Local Express type augmentation lives here
     "typeRoots": ["./node_modules/@types", "./src/types"]
   },
-  "include": ["./*.js", "src/**/*.ts", "test/**/*.ts", ".eslintrc.js"],
-  "exclude": [
-    "node_modules",
-    "**/*.spec.ts",
-    "**/*.test.ts",
-    "src/logs",
-    "src/tests"
-  ]
+  "include": ["src/**/*.ts", "tests/**/*.ts", "vitest.config.mts"],
+  "exclude": ["node_modules", "dist", "**/*.spec.ts", "**/*.test.ts"]
 }

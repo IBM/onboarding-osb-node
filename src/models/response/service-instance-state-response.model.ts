@@ -1,23 +1,23 @@
-import { IsBoolean, IsOptional, IsNumber } from 'class-validator'
-import { Expose } from 'class-transformer'
+import { IsBoolean, IsOptional, IsNumber } from "class-validator";
+import { Expose } from "class-transformer";
 
 export class ServiceInstanceStateResponse {
   @IsOptional()
   @IsBoolean()
-  active?: boolean
+  active?: boolean;
 
   @IsOptional()
   @IsBoolean()
-  enabled?: boolean
+  enabled?: boolean;
 
   @IsOptional()
   @IsNumber()
-  @Expose({ name: 'last_active' })
-  lastActive?: number
+  @Expose({ name: "last_active" })
+  lastActive?: number;
 
   constructor(data: Partial<ServiceInstanceStateResponse>) {
     if (data) {
-      Object.assign(this, data)
+      Object.assign(this, data);
     }
   }
 }

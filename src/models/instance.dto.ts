@@ -1,22 +1,22 @@
-import { IsNotEmpty } from 'class-validator'
+import { IsNotEmpty } from "class-validator";
 export class InstanceDto {
   @IsNotEmpty()
-  instanceId: string
+  instanceId: string;
 
   @IsNotEmpty()
-  name: string
+  name: string;
 
   @IsNotEmpty()
-  planId: string
+  planId: string;
 
   @IsNotEmpty()
-  status: string
+  status: string;
 
   @IsNotEmpty()
-  region: string
+  region: string;
 
   @IsNotEmpty()
-  updateDate: Date
+  updateDate: Date;
 
   constructor(
     instanceId: string,
@@ -26,11 +26,11 @@ export class InstanceDto {
     region: string,
     updateDate: Date,
   ) {
-    this.instanceId = instanceId
-    this.name = name
-    this.planId = planId
-    this.status = status
-    this.region = region
-    this.updateDate = updateDate
+    this.instanceId = instanceId;
+    this.name = name;
+    this.planId = planId;
+    this.status = status;
+    this.region = region;
+    this.updateDate = updateDate;
   }
 }

@@ -4,14 +4,14 @@ FROM node:24
 # Create and change to the app directory
 WORKDIR /usr/src/app
 
-# Copy the package.json and yarn.lock files to the working directory
-COPY package.json yarn.lock ./
+# Copy the package.json and pnpm-lock.yaml files to the working directory
+COPY package.json pnpm-lock.yaml ./
 
 # Install dependencies
-RUN yarn install
+RUN corepack enable pnpm && pnpm install --frozen-lockfile
 
 # Expose the port the app runs on
 EXPOSE 3001
 
 # Define the command to run the application in development mode
-CMD ["yarn", "start:dev"]
+CMD ["pnpm", "start:dev"]

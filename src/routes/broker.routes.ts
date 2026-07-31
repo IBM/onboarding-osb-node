@@ -1,18 +1,18 @@
-import { Router } from 'express'
-import multer from 'multer'
-import { BrokerController } from '../controllers/broker.controller'
-import { BrokerServiceImpl } from '../services/impl/broker-impl.service'
-import { validateBody } from '../middlewares/validate-body'
-import { CreateServiceInstanceRequest } from '../models/create-service-instance-request.model'
-import { UpdateStateRequest } from '../models/update-state-request.model'
+import { Router } from "express";
+import multer from "multer";
+import { BrokerController } from "../controllers/broker.controller.js";
+import { BrokerServiceImpl } from "../services/impl/broker-impl.service.js";
+import { validateBody } from "../middlewares/validate-body.js";
+import { CreateServiceInstanceRequest } from "../models/create-service-instance-request.model.js";
+import { UpdateStateRequest } from "../models/update-state-request.model.js";
 
-const service = new BrokerServiceImpl()
-const controller = new BrokerController(service)
-const upload = multer({ storage: multer.memoryStorage() })
+const service = new BrokerServiceImpl();
+const controller = new BrokerController(service);
+const upload = multer({ storage: multer.memoryStorage() });
 
 export class BrokerRoutes {
   static get routes(): Router {
-    const router = Router()
+    const router = Router();
 
     /**
      * PUT /v2/catalog
@@ -29,7 +29,7 @@ export class BrokerRoutes {
      *
      * @throws {Error} If there is an issue with the file upload or catalog import process
      */
-    router.put('/v2/catalog', upload.single('file'), controller.importCatalog)
+    router.put("/v2/catalog", upload.single("file"), controller.importCatalog);
 
     /**
      * GET /v2/catalog
@@ -44,7 +44,7 @@ export class BrokerRoutes {
      * @returns {Object} The catalog containing services and plans
      * @throws {Error} If there is an issue retrieving the catalog
      */
-    router.get('/v2/catalog', controller.getCatalog)
+    router.get("/v2/catalog", controller.getCatalog);
 
     /**
      * PUT /v2/service_instances/:instanceId
@@ -58,34 +58,31 @@ export class BrokerRoutes {
      * @throws {Error} In case of error
      */
     router.put(
-      '/v2/service_instances/:instanceId',
+      "/v2/service_instances/:instanceId",
       validateBody(CreateServiceInstanceRequest),
       controller.provision,
-    )
+    );
 
     /**
      * IBM Cloud Enablement Extension: enable service instance
      * @throws IOException
      */
     router.put(
-      '/bluemix_v1/service_instances/:instanceId',
+      "/bluemix_v1/service_instances/:instanceId",
       validateBody(UpdateStateRequest),
       controller.updateState,
-    )
+    );
 
     /**
      * IBM Cloud Enablement Extension: service instance state inquiry.
      * @throws IOException
      */
-    router.get('/bluemix_v1/service_instances/:instanceId', controller.getState)
-    router.put(
-      '/v2/service_instances/:instanceId/service_bindings/:bindingId',
-      controller.bind,
-    )
+    router.get("/bluemix_v1/service_instances/:instanceId", controller.getState);
+    router.put("/v2/service_instances/:instanceId/service_bindings/:bindingId", controller.bind);
     router.delete(
-      '/v2/service_instances/:instanceId/service_bindings/:bindingId',
+      "/v2/service_instances/:instanceId/service_bindings/:bindingId",
       controller.unbind,
-    )
+    );
 
     /**
      * Deprovision/Delete given service instance.
@@ -94,14 +91,11 @@ export class BrokerRoutes {
      * @param {string} service_id - The service id
      * @param {boolean} accepts_incomplete - Accepts incomplete
      */
-    router.delete('/v2/service_instances/:instanceId', controller.deprovision)
-    router.patch('/v2/service_instances/:instanceId', controller.update)
-    router.get(
-      '/v2/service_instances/:instanceId/last_operation',
-      controller.fetchLastOperation,
-    )
-    router.get('/provision_status', controller.getProvisionStatus)
+    router.delete("/v2/service_instances/:instanceId", controller.deprovision);
+    router.patch("/v2/service_instances/:instanceId", controller.update);
+    router.get("/v2/service_instances/:instanceId/last_operation", controller.fetchLastOperation);
+    router.get("/provision_status", controller.getProvisionStatus);
 
-    return router
+    return router;
   }
 }

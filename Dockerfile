@@ -1,11 +1,11 @@
 # Use the official Node.js image as the base image
-FROM node:24 as builder
+FROM node:24 AS builder
 
 WORKDIR /usr/src/app
-COPY package.json yarn.lock tsconfig.json ./
-RUN yarn install
+COPY package.json pnpm-lock.yaml tsconfig.json ./
+RUN corepack enable pnpm && pnpm install --frozen-lockfile
 COPY src src
-RUN npm run build
+RUN pnpm build
 
 FROM node:24
 

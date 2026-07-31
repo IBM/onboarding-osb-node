@@ -1,6 +1,6 @@
-import { RequestHandler } from 'express'
-import { SupportInfoService } from '../services/support-info.service'
-import logger from '../utils/logger'
+import { RequestHandler } from "express";
+import { SupportInfoService } from "../services/support-info.service.js";
+import logger from "../utils/logger.js";
 
 export class SupportInfoController {
   constructor(private supportInfoService: SupportInfoService) {}
@@ -9,35 +9,31 @@ export class SupportInfoController {
     try {
       logger.info(
         `Request received: GET /support/instances request headers: ${JSON.stringify(req.headers)}`,
-      )
+      );
 
-      const instances = await this.supportInfoService.getServiceInstances()
+      const instances = await this.supportInfoService.getServiceInstances();
 
-      logger.info('Request completed: GET /support/instances')
-      res.status(200).json(instances)
+      logger.info("Request completed: GET /support/instances");
+      res.status(200).json(instances);
     } catch (error) {
-      logger.error(`Error retrieving instances: ${error}`)
-      next(error)
+      logger.error(`Error retrieving instances: ${error}`);
+      next(error);
     }
-  }
+  };
 
-  public getMetadata: RequestHandler = async (
-    req,
-    res,
-    next,
-  ): Promise<void> => {
+  public getMetadata: RequestHandler = async (req, res, next): Promise<void> => {
     try {
       logger.info(
         `Request received: GET /support/metadata request headers: ${JSON.stringify(req.headers)}`,
-      )
+      );
 
-      const metadata = await this.supportInfoService.getMetadata()
+      const metadata = await this.supportInfoService.getMetadata();
 
-      logger.info('Request completed: GET /support/metadata')
-      res.status(200).json(metadata)
+      logger.info("Request completed: GET /support/metadata");
+      res.status(200).json(metadata);
     } catch (error) {
-      logger.error(`Error retrieving metadata: ${error}`)
-      next(error)
+      logger.error(`Error retrieving metadata: ${error}`);
+      next(error);
     }
-  }
+  };
 }

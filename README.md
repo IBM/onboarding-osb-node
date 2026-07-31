@@ -18,7 +18,7 @@ This project provides:
 To run Broker application in development you will need:
 
 - Docker Desktop or an alternative (e.g. Rancher)
-- [yarn](https://classic.yarnpkg.com/en/docs/install#mac-stable)
+- [pnpm](https://pnpm.io/installation) (`npm install -g pnpm` or via Corepack: `corepack enable pnpm`)
 - NodeJs, install using [nvm](https://github.com/nvm-sh/nvm) or a method of your choosing
 
 ### Development
@@ -27,7 +27,7 @@ To run Broker application in development you will need:
 2. Start the application using the following commands:
 
 ```bash
-yarn install
+pnpm install
 docker compose up
 ```
 

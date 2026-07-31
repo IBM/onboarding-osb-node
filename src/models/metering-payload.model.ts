@@ -1,24 +1,24 @@
-import { IsNotEmpty } from 'class-validator'
-import { MeasuredUsage } from './measured-usage.model'
+import { IsNotEmpty } from "class-validator";
+import { MeasuredUsage } from "./measured-usage.model.js";
 
 export class MeteringPayload {
   @IsNotEmpty()
-  planId: string
+  planId: string;
 
   @IsNotEmpty()
-  resourceInstanceId: string
+  resourceInstanceId: string;
 
   @IsNotEmpty()
-  start: number
+  start: number;
 
   @IsNotEmpty()
-  end: number
+  end: number;
 
   @IsNotEmpty()
-  region: string
+  region: string;
 
   @IsNotEmpty()
-  measuredUsage: MeasuredUsage[]
+  measuredUsage: MeasuredUsage[];
 
   constructor(
     planId: string,
@@ -28,15 +28,15 @@ export class MeteringPayload {
     region: string,
     measuredUsage: MeasuredUsage[],
   ) {
-    this.planId = planId
-    this.resourceInstanceId = resourceInstanceId
-    this.start = start
-    this.end = end
-    this.region = region
-    this.measuredUsage = measuredUsage
+    this.planId = planId;
+    this.resourceInstanceId = resourceInstanceId;
+    this.start = start;
+    this.end = end;
+    this.region = region;
+    this.measuredUsage = measuredUsage;
   }
 
   toString(): string {
-    return `MeteringPayload{planId='${this.planId}', instanceId='${this.resourceInstanceId}', startTime='${this.start}', endTime=${this.end}, MeasuredUsage=${JSON.stringify(this.measuredUsage)}}`
+    return `MeteringPayload{planId='${this.planId}', instanceId='${this.resourceInstanceId}', startTime='${this.start}', endTime=${this.end}, MeasuredUsage=${JSON.stringify(this.measuredUsage)}}`;
   }
 }

@@ -1,19 +1,19 @@
-import { IsNotEmpty } from 'class-validator'
-import { ServiceDefinition } from './service-definition.model'
+import { IsNotEmpty } from "class-validator";
+import { ServiceDefinition } from "./service-definition.model.js";
 
 export class Catalog {
   @IsNotEmpty()
-  services: ServiceDefinition[]
+  services: ServiceDefinition[];
 
   constructor(services: ServiceDefinition[]) {
-    this.services = services
+    this.services = services;
   }
 
   public getServiceDefinitions(): ServiceDefinition[] {
-    return this.services
+    return this.services;
   }
 
   public toString(): string {
-    return `Catalog{serviceDefinitions=${JSON.stringify(this.services)}}`
+    return `Catalog{serviceDefinitions=${JSON.stringify(this.services)}}`;
   }
 }

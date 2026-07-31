@@ -1,17 +1,17 @@
-import { IsNotEmpty } from 'class-validator'
+import { IsNotEmpty } from "class-validator";
 export class MeasuredUsage {
   @IsNotEmpty()
-  measure: string
+  measure: string;
 
   @IsNotEmpty()
-  quantity: number
+  quantity: number;
 
   constructor(measure: string, quantity: number) {
-    this.measure = measure
-    this.quantity = quantity
+    this.measure = measure;
+    this.quantity = quantity;
   }
 
   toString(): string {
-    return `MeasuredUsage{measure='${this.measure}', quantity='${this.quantity}'}`
+    return `MeasuredUsage{measure='${this.measure}', quantity='${this.quantity}'}`;
   }
 }

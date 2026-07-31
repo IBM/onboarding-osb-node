@@ -1,8 +1,5 @@
-import { MeteringPayload } from '../models/metering-payload.model'
+import { MeteringPayload } from "../models/metering-payload.model.js";
 
 export interface UsageService {
-  sendUsageData(
-    resourceId: string,
-    meteringPayload: MeteringPayload,
-  ): Promise<string>
+  sendUsageData(resourceId: string, meteringPayload: MeteringPayload): Promise<string>;
 }

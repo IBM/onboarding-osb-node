@@ -1,35 +1,35 @@
-import { Entity, Column, PrimaryColumn } from 'typeorm'
-import { BaseEntity } from './base.entity'
+import { Entity, Column, PrimaryColumn } from "typeorm";
+import { BaseEntity } from "./base.entity.js";
 
-@Entity({ name: 'service_instance' })
+@Entity({ name: "service_instance" })
 export class ServiceInstance extends BaseEntity {
-  @PrimaryColumn({ name: 'instance_id' })
-  instanceId!: string
+  @PrimaryColumn({ name: "instance_id" })
+  instanceId!: string;
 
   @Column({ nullable: true })
-  name!: string
+  name!: string;
 
-  @Column({ name: 'iam_id', nullable: true })
-  iamId!: string
+  @Column({ name: "iam_id", nullable: true })
+  iamId!: string;
 
-  @Column({ name: 'plan_id', nullable: true })
-  planId!: string
+  @Column({ name: "plan_id", nullable: true })
+  planId!: string;
 
-  @Column({ name: 'service_id', nullable: true })
-  serviceId!: string
+  @Column({ name: "service_id", nullable: true })
+  serviceId!: string;
 
   @Column({ nullable: true })
-  status!: string
+  status!: string;
 
   @Column({ default: false })
-  enabled!: boolean
+  enabled!: boolean;
 
   @Column({ nullable: true })
-  region!: string
+  region!: string;
 
   @Column({ length: 1024, nullable: true })
-  context!: string
+  context!: string;
 
   @Column({ nullable: true })
-  parameters!: string
+  parameters!: string;
 }

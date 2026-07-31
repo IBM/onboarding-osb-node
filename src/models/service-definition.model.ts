@@ -1,42 +1,42 @@
-import { IsNotEmpty, IsBoolean, IsString, IsOptional } from 'class-validator'
-import { Plan } from './plan.model'
-import { DashboardClient } from './dashboard-client.model'
+import { IsNotEmpty, IsBoolean, IsString, IsOptional } from "class-validator";
+import { Plan } from "./plan.model.js";
+import { DashboardClient } from "./dashboard-client.model.js";
 
 export class ServiceDefinition {
   @IsNotEmpty()
   @IsString()
-  id: string
+  id: string;
 
   @IsNotEmpty()
   @IsString()
-  name: string
+  name: string;
 
   @IsNotEmpty()
   @IsString()
-  description: string
+  description: string;
 
   @IsOptional()
   @IsBoolean()
-  bindable?: boolean
+  bindable?: boolean;
 
   @IsOptional()
   @IsBoolean()
-  planUpdateable?: boolean
+  planUpdateable?: boolean;
 
   @IsNotEmpty()
-  plans: Plan[]
+  plans: Plan[];
 
   @IsOptional()
-  tags?: string[]
+  tags?: string[];
 
   @IsOptional()
-  metadata?: Record<string, any>
+  metadata?: Record<string, any>;
 
   @IsOptional()
-  requires?: string[]
+  requires?: string[];
 
   @IsOptional()
-  dashboardClient?: DashboardClient
+  dashboardClient?: DashboardClient;
 
   constructor(
     id: string,
@@ -50,19 +50,19 @@ export class ServiceDefinition {
     requires?: string[],
     dashboardClient?: DashboardClient,
   ) {
-    this.id = id
-    this.name = name
-    this.description = description
-    this.plans = plans
-    this.bindable = bindable
-    this.planUpdateable = planUpdateable
-    this.tags = tags
-    this.metadata = metadata
-    this.requires = requires
-    this.dashboardClient = dashboardClient
+    this.id = id;
+    this.name = name;
+    this.description = description;
+    this.plans = plans;
+    this.bindable = bindable;
+    this.planUpdateable = planUpdateable;
+    this.tags = tags;
+    this.metadata = metadata;
+    this.requires = requires;
+    this.dashboardClient = dashboardClient;
   }
 
   toString(): string {
-    return `ServiceDefinition{id='${this.id}', name='${this.name}', description='${this.description}', bindable=${this.bindable}, planUpdateable=${this.planUpdateable}, plans=${JSON.stringify(this.plans)}, tags=${this.tags}, metadata=${this.metadata}, requires=${this.requires}, dashboardClient=${this.dashboardClient}}`
+    return `ServiceDefinition{id='${this.id}', name='${this.name}', description='${this.description}', bindable=${this.bindable}, planUpdateable=${this.planUpdateable}, plans=${JSON.stringify(this.plans)}, tags=${this.tags}, metadata=${this.metadata}, requires=${this.requires}, dashboardClient=${this.dashboardClient}}`;
   }
 }

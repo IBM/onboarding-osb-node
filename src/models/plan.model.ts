@@ -1,16 +1,16 @@
-import { IsNotEmpty } from 'class-validator'
-import { BaseModel } from './base.model'
+import { IsNotEmpty } from "class-validator";
+import { BaseModel } from "./base.model.js";
 
 export class Plan extends BaseModel {
   @IsNotEmpty()
-  name: string
+  name: string;
 
   @IsNotEmpty()
-  description: string
+  description: string;
 
-  metadata: Record<string, any>
+  metadata: Record<string, any>;
 
-  free: boolean
+  free: boolean;
 
   constructor(
     id: string,
@@ -21,14 +21,14 @@ export class Plan extends BaseModel {
     metadata: Record<string, any>,
     free: boolean,
   ) {
-    super(id, createdAt, updatedAt)
-    this.name = name
-    this.description = description
-    this.metadata = metadata
-    this.free = free
+    super(id, createdAt, updatedAt);
+    this.name = name;
+    this.description = description;
+    this.metadata = metadata;
+    this.free = free;
   }
 
   toString(): string {
-    return `Plan{id='${this.id}', createdAt='${this.createdAt}', updatedAt='${this.updatedAt}', name='${this.name}', description='${this.description}', metadata=${this.metadata}, free=${this.free}}`
+    return `Plan{id='${this.id}', createdAt='${this.createdAt}', updatedAt='${this.updatedAt}', name='${this.name}', description='${this.description}', metadata=${this.metadata}, free=${this.free}}`;
   }
 }
