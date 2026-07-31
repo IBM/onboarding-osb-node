@@ -17,14 +17,11 @@ export const errorHandler: ErrorRequestHandler = (err, req, res, next) => {
       },
     );
 
+    // OSB v2.12 §3: error body must use top-level "description" for the human-readable
+    // message and an optional top-level "error" string for the machine-readable code.
     res.status(err.statusCode).json({
-      error: {
-        status: err.statusCode,
-        message: err.message,
-        isOperational: err.isOperational,
-        ...(err.code && { code: err.code }),
-        ...(err.params && { params: err.params }),
-      },
+      description: err.message,
+      ...(err.code && { error: err.code }),
     });
   } else {
     logger.error(`Unhandled Error - Message: ${err.message}`, {
@@ -35,11 +32,7 @@ export const errorHandler: ErrorRequestHandler = (err, req, res, next) => {
     });
 
     res.status(500).json({
-      error: {
-        status: 500,
-        message: "Internal Server Error",
-        details: process.env.NODE_ENV === "development" ? err.message : "A server error occurred",
-      },
+      description: "Internal Server Error",
     });
   }
 };

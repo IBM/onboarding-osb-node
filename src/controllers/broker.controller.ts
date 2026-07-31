@@ -43,16 +43,34 @@ export class BrokerController {
         throw new Error("One or more required parameters are missing or invalid.");
       }
 
-      const response = await this.brokerService.provision(
-        instanceId,
-        req.body,
-        iamId,
-        bluemixRegion,
-      );
+      // OSB v2.12 §2.7: if the broker only operates asynchronously and the client
+      // did not set accepts_incomplete=true, reject with 422 AsyncRequired.
+      if (!acceptsIncomplete) {
+        // This broker provisions synchronously, so no 422 is needed here.
+        // If you make provisioning async, uncomment the lines below:
+        // res.status(422).json({ error: "AsyncRequired", description: "This service plan requires client support for asynchronous service operations." });
+        // return;
+      }
 
-      res.status(201).json(response);
-    } catch (error) {
+      const result = await this.brokerService.provision(instanceId, req.body, iamId, bluemixRegion);
+
+      if (result.alreadyExists) {
+        // OSB v2.12 §2.7: identical instance already exists → 200
+        res.status(200).json(result.response);
+      } else if (result.isAsync) {
+        // OSB v2.12 §2.7: async provisioning accepted → 202
+        res.status(202).json(result.response);
+      } else {
+        // OSB v2.12 §2.7: new instance created synchronously → 201
+        res.status(201).json(result.response);
+      }
+    } catch (error: any) {
       logger.error(`Error provisioning service instance: ${error}`);
+      if (error?.statusCode === 409) {
+        // OSB v2.12 §2.7: conflicting instance → 409 Conflict
+        res.status(409).json({ description: error.message });
+        return;
+      }
       next(error);
     }
   };
@@ -117,14 +135,21 @@ export class BrokerController {
       const planId = req.query.plan_id as string;
       const serviceId = req.query.service_id as string;
 
-      await this.brokerService.deprovision(
+      const result = await this.brokerService.deprovision(
         instanceId,
         planId,
         serviceId,
         BrokerUtil.getIamId(req) ?? "",
       );
 
-      res.sendStatus(acceptsIncomplete ? 202 : 200);
+      if (result === null) {
+        // OSB v2.12 §2.9: instance not found → 410 Gone
+        res.status(410).json({});
+        return;
+      }
+
+      // OSB v2.12 §2.9: async → 202, sync → 200 with empty JSON object body
+      res.status(acceptsIncomplete ? 202 : 200).json({});
     } catch (error) {
       logger.error(`Error deprovisioning service instance: ${error}`);
       next(error);
@@ -146,6 +171,13 @@ export class BrokerController {
       const instanceId = req.params.instanceId as string;
       const originatingIdentity = BrokerUtil.getIamId(req) ?? "";
       const response = await this.brokerService.lastOperation(instanceId, originatingIdentity);
+
+      if (response === null) {
+        // OSB v2.12 §2.14: instance not found → 410 Gone
+        res.status(410).json({});
+        return;
+      }
+
       res.status(200).json(response);
     } catch (error) {
       logger.error(`Error fetching last operation: ${error}`);

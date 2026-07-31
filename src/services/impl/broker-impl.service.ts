@@ -5,7 +5,7 @@ import { promisify } from "util";
 import { plainToInstance } from "class-transformer";
 import { Repository } from "typeorm";
 
-import { BrokerService } from "../broker.service.js";
+import { BrokerService, ProvisionResult } from "../broker.service.js";
 import { Catalog } from "../../models/catalog.model.js";
 import { CreateServiceInstanceResponse } from "../../models/response/create-service-instance-response.model.js";
 import { CreateServiceInstanceRequest } from "../../models/create-service-instance-request.model.js";
@@ -116,7 +116,7 @@ export class BrokerServiceImpl implements BrokerService {
     details: any,
     iamId: string,
     region: string,
-  ): Promise<CreateServiceInstanceResponse> {
+  ): Promise<ProvisionResult> {
     const createServiceRequest = new CreateServiceInstanceRequest(details);
     createServiceRequest.instanceId = instanceId;
 
@@ -137,8 +137,31 @@ export class BrokerServiceImpl implements BrokerService {
         throw new Error(`Invalid plan id: ${createServiceRequest.plan_id}`);
       }
 
-      const serviceInstance = this.getServiceInstanceEntity(createServiceRequest, iamId, region);
+      // OSB v2.12 §2.7: check for an existing instance with the same id.
+      const existing = await this.serviceInstanceRepo.findOne({ where: { instanceId } });
+      if (existing) {
+        if (
+          existing.planId === createServiceRequest.plan_id &&
+          existing.serviceId === createServiceRequest.service_id
+        ) {
+          // Identical re-provision → 200
+          logger.info(`Duplicate provision request for existing instance: ${instanceId}`);
+          const displayName = this.getServiceMetaDataByAttribute(BrokerServiceImpl.DISPLAY_NAME);
+          const responseUrl = `${process.env.DASHBOARD_URL}${BrokerServiceImpl.PROVISION_STATUS_API}${displayName || this.catalog.getServiceDefinitions()[0].name}${BrokerServiceImpl.INSTANCE_ID}${instanceId}`;
+          return {
+            response: plainToInstance(CreateServiceInstanceResponse, { dashboardUrl: responseUrl }),
+            isAsync: false,
+            alreadyExists: true,
+          };
+        } else {
+          // Conflicting re-provision → 409
+          throw Object.assign(new Error("Instance already exists with different parameters"), {
+            statusCode: 409,
+          });
+        }
+      }
 
+      const serviceInstance = this.getServiceInstanceEntity(createServiceRequest, iamId, region);
       await this.serviceInstanceRepo.save(serviceInstance);
 
       logger.info(
@@ -148,9 +171,11 @@ export class BrokerServiceImpl implements BrokerService {
       const displayName = this.getServiceMetaDataByAttribute(BrokerServiceImpl.DISPLAY_NAME);
       const responseUrl = `${process.env.DASHBOARD_URL}${BrokerServiceImpl.PROVISION_STATUS_API}${displayName || this.catalog.getServiceDefinitions()[0].name}${BrokerServiceImpl.INSTANCE_ID}${instanceId}`;
 
-      return plainToInstance(CreateServiceInstanceResponse, {
-        dashboardUrl: responseUrl,
-      });
+      return {
+        response: plainToInstance(CreateServiceInstanceResponse, { dashboardUrl: responseUrl }),
+        isAsync: false,
+        alreadyExists: false,
+      };
     } else {
       logger.error(`Unidentified platform: ${createServiceRequest.context?.platform}`);
       throw new Error(`Invalid platform: ${createServiceRequest.context?.platform}`);
@@ -162,10 +187,16 @@ export class BrokerServiceImpl implements BrokerService {
     planId: string,
     serviceId: string,
     iamId: string,
-  ): Promise<boolean> {
+  ): Promise<boolean | null> {
     logger.info(
       `Deprovisioning instance: ${instanceId} planId: ${planId} serviceId: ${serviceId} iamId: ${iamId}`,
     );
+    // OSB v2.12 §2.9: return null to signal 410 Gone when the instance doesn't exist.
+    const existing = await this.serviceInstanceRepo.findOne({ where: { instanceId } });
+    if (!existing) {
+      logger.info(`Deprovision called for non-existent instance: ${instanceId}`);
+      return null;
+    }
     await this.serviceInstanceRepo.delete({ instanceId });
     return true;
   }
@@ -185,8 +216,14 @@ export class BrokerServiceImpl implements BrokerService {
     return null;
   }
 
-  public async lastOperation(instanceId: string, iamId: string): Promise<any> {
+  public async lastOperation(instanceId: string, iamId: string): Promise<any | null> {
     logger.info(`last_operation Response status: 200, body: ${instanceId} ${iamId}`);
+
+    // OSB v2.12 §2.14: return null to signal 410 Gone when the instance doesn't exist.
+    const existing = await this.serviceInstanceRepo.findOne({ where: { instanceId } });
+    if (!existing) {
+      return null;
+    }
 
     return {
       [BrokerServiceImpl.INSTANCE_STATE]: OperationState.SUCCEEDED,
