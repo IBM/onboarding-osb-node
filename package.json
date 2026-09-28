@@ -41,7 +41,7 @@
     "express": "^5.2.1",
     "js-base64": "^3.9.2",
     "jsonwebtoken": "^9.0.3",
-    "multer": "^2.2.0",
+    "multer": "^2.4.0",
     "pg": "^8.22.0",
     "reflect-metadata": "^0.2.2",
     "tsconfig-paths": "^4.2.0",
