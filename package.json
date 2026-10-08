@@ -61,7 +61,7 @@
     "concurrently": "^8.2.2",
     "husky": "9.0.11",
     "lint-staged": "^15.5.2",
-    "oxfmt": "^0.61.0",
+    "oxfmt": "^0.72.0",
     "oxlint": "^1.87.0",
     "supertest": "^7.3.1",
     "tsx": "^4.23.15",
